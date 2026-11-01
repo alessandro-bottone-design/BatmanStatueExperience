@@ -103,13 +103,19 @@ test("official start has original assets, tokens and no initial experience downl
   expect(computed.family).toContain("Space Grotesk");
   await page.evaluate(() => document.fonts.ready);
   await expect(page.locator(".ds-logos img")).toHaveCount(2);
-  expect(
-    await page
-      .locator(".ds-logos img")
-      .evaluateAll((els) =>
-        els.every((el) => (el as HTMLImageElement).naturalWidth > 0),
-      ),
-  ).toBe(true);
+  await expect
+    .poll(() =>
+      page
+        .locator(".ds-logos img")
+        .evaluateAll((els) =>
+          els.every(
+            (el) =>
+              (el as HTMLImageElement).complete &&
+              (el as HTMLImageElement).naturalWidth > 0,
+          ),
+        ),
+    )
+    .toBe(true);
   expect(media).toEqual([]);
   await page.mouse.move(1910, 1070);
   await page.screenshot({ path: test.info().outputPath("start.png") });
