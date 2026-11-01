@@ -4,8 +4,10 @@
 - `public/assets/textures`: tre MP4 panoramici e relativi JPG di fallback. Rigenerazione: `node scripts/extract-frame.mjs` con FFmpeg installato.
 - `public/assets/videos`: i due filmati di passaggio tra aree.
 - `public/assets/audio`: musica e risata del Joker.
-- `public/assets/images` e immagini alla root di `public`: carte, schermate e loghi.
+- `public/assets/ds`: export ufficiali Figma per carte, icone, loghi, progresso e cursore; [manifest](figma/assets.json).
+- `public/assets/fonts`: Space Grotesk e Satoshi Regular/Bold.
+- `public/assets/images` e immagini alla root di `public`: asset storici conservati.
 
-Nessun preload integrale iniziale dei cinque MP4. Lo showreel prioritizza il frame richiesto e quelli vicini, massimo sei richieste concorrenti e cache di 48 immagini caricate. Il primo frame viene dipinto al caricamento; gli errori non incrementano successi. Nel movimento ridotto vengono richieste le sole viste selezionate.
+Nessun preload integrale iniziale dei cinque MP4. Lo showreel prioritizza il frame richiesto e quelli vicini, massimo sei richieste concorrenti e cache di 48 immagini caricate. Il primo frame viene dipinto al caricamento; gli errori non incrementano successi. Nel movimento ridotto viene richiesto il solo frame statico finale.
 
 Gli asset sorgente vivono in `public`; la copia generata in `dist` è ignorata da Git. Gli screenshot storici negli asset non sono una prova della versione corrente.
