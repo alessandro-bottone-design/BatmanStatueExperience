@@ -1,0 +1,122 @@
+[
+  {
+    "file": "public/assets/ds/audio-off.svg",
+    "bytes": 1256,
+    "sha256": "71992341e9652c825fb9599f0e3a796c1908af7179c7e4261b14ecdb32e395d5",
+    "native": {
+      "width": "30",
+      "height": "29",
+      "viewBox": "0 0 30 29"
+    }
+  },
+  {
+    "file": "public/assets/ds/audio-on.svg",
+    "bytes": 2266,
+    "sha256": "351f036263a88fbc03adf144f413fcb602ae399b50279fb0247b2e6ac2e5f7d1",
+    "native": {
+      "width": "30",
+      "height": "30",
+      "viewBox": "0 0 30 30"
+    }
+  },
+  {
+    "file": "public/assets/ds/batman.svg",
+    "bytes": 2549,
+    "sha256": "d6e9a20142857dac2109684a2f330ac912f3fdeaeb4b07c89529417e910ae1f7",
+    "native": {
+      "width": "255",
+      "height": "194",
+      "viewBox": "0 0 255 194"
+    }
+  },
+  {
+    "file": "public/assets/ds/card-back.png",
+    "bytes": 644757,
+    "sha256": "42a604ca2bc0745bead6348e25a494658701a213b2828d5442ab9f5c62a8de24"
+  },
+  {
+    "file": "public/assets/ds/card-front.png",
+    "bytes": 930348,
+    "sha256": "866851bc8202121f257bd03cb7e9befdc879cc8598a2ff1fbb77a90a6a3033fc"
+  },
+  {
+    "file": "public/assets/ds/chevron-left.svg",
+    "bytes": 310,
+    "sha256": "8ccd5c3a0ec49ee030e7587ed1c8961a30c1fe799055fb1a5bdc5bfa9b9b86f6",
+    "native": {
+      "width": "30",
+      "height": "30",
+      "viewBox": "0 0 30 30"
+    }
+  },
+  {
+    "file": "public/assets/ds/chevron-right.svg",
+    "bytes": 310,
+    "sha256": "8ccd5c3a0ec49ee030e7587ed1c8961a30c1fe799055fb1a5bdc5bfa9b9b86f6",
+    "native": {
+      "width": "30",
+      "height": "30",
+      "viewBox": "0 0 30 30"
+    }
+  },
+  {
+    "file": "public/assets/ds/cursor.svg",
+    "bytes": 2581,
+    "sha256": "2ab4fd891a2c1d3761586a05bbd52a1332c7cd8af05c45b9c6044b30c1dc7fd8",
+    "native": {
+      "width": "173.433",
+      "height": "146.288",
+      "viewBox": "0 0 173.433 146.288"
+    }
+  },
+  {
+    "file": "public/assets/ds/pause.svg",
+    "bytes": 286,
+    "sha256": "e9aa3b53dd372646776d34bad8a3a3aeea1865e9e0b1af5782d5bc5c561afc9e",
+    "native": {
+      "width": "30",
+      "height": "30",
+      "viewBox": "0 0 30 30"
+    }
+  },
+  {
+    "file": "public/assets/ds/play.svg",
+    "bytes": 262,
+    "sha256": "872e3604771d0398e7d55beae07756edcb427a67e27e8979e65a5c2ab838cb71",
+    "native": {
+      "width": "30",
+      "height": "30",
+      "viewBox": "0 0 30 30"
+    }
+  },
+  {
+    "file": "public/assets/ds/progress-empty.svg",
+    "bytes": 243,
+    "sha256": "082d2771c99600a48f3eb7019c58e77f4b2342cfabd02e9c631b1225b23180bc",
+    "native": {
+      "width": "1",
+      "height": "12",
+      "viewBox": "0 0 1 12"
+    }
+  },
+  {
+    "file": "public/assets/ds/progress-full.svg",
+    "bytes": 244,
+    "sha256": "c28cf7649f520e7b01aad18af6f050eebb53c42980ae5d3adc17638354e3cfac",
+    "native": {
+      "width": "96",
+      "height": "12",
+      "viewBox": "0 0 96 12"
+    }
+  },
+  {
+    "file": "public/assets/ds/sideshow.svg",
+    "bytes": 5863,
+    "sha256": "ce8fac9f66fe3762c65787310a6e709d43d90cfdd180229aceab4c7183232df2",
+    "native": {
+      "width": "307.683",
+      "height": "193.151",
+      "viewBox": "0 0 307.683 193.151"
+    }
+  }
+]

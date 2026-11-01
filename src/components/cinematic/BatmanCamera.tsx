@@ -1,25 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
+import { Button } from "../ui/DesignSystem";
 const FRAMES = 800,
   CONCURRENCY = 6,
   CACHE_LIMIT = 48;
 const source = (index: number) =>
   `/assets/showreel/${String(index).padStart(4, "0")}.webp`;
-const BEATS = [
-  ["Scultura di precisione.", "Ogni ombra di Gotham, scolpita nel dettaglio."],
-  [
-    "Materiali d’élite.",
-    "Superfici e finiture che danno forma al Cavaliere Oscuro.",
-  ],
-  [
-    "Edizione limitata.",
-    "Un tributo alla leggenda. Una presenza nella tua collezione.",
-  ],
-  [
-    "Presenza leggendaria.",
-    "Ottantasette anni di storie. Un’icona senza tempo.",
-  ],
-];
 export default function BatmanCamera({
   onPreorder,
 }: {
@@ -31,7 +17,6 @@ export default function BatmanCamera({
   const [progress, setProgress] = useState(0);
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
-  const [gallery, setGallery] = useState(1);
   const [retry, setRetry] = useState(0);
   useEffect(() => {
     if (reduced) return;
@@ -165,110 +150,77 @@ export default function BatmanCamera({
       window.removeEventListener("resize", resize);
     };
   }, [reduced, retry]);
-  const beat = Math.min(3, Math.floor(progress * 4));
-  if (reduced)
-    return (
-      <section className="statue-gallery">
-        <div>
-          <p className="eyebrow">BATMAN / 87 ANNI DI LEGGENDA</p>
-          <h1>
-            Il Cavaliere
-            <br />
-            Oscuro.
-          </h1>
-          <p>
-            Un tributo alla presenza, alla precisione e alla storia di un’icona.
-          </p>
-          <p className="caption">
-            Modalità a movimento ridotto: scegli un’immagine.
-          </p>
-          <div className="gallery-options">
-            {[1, 200, 400, 600, 800].map((frame, i) => (
-              <button
-                className={gallery === frame ? "" : "secondary"}
-                key={frame}
-                aria-pressed={gallery === frame}
-                onClick={() => setGallery(frame)}
-              >
-                Vista {i + 1}
-              </button>
-            ))}
-          </div>
-          <button onClick={onPreorder}>Esplora il checkout demo</button>
-          {failed && (
-            <div role="status">
-              <p>
-                Immagine non disponibile. Puoi riprovare o proseguire con la
-                demo.
-              </p>
-              <button
-                className="secondary"
-                onClick={() => {
-                  setFailed(false);
-                  setRetry((r) => r + 1);
-                }}
-              >
-                Riprova immagine
-              </button>
-            </div>
-          )}
-        </div>
-        <img
-          src={source(gallery) + (retry ? `?retry=${retry}` : "")}
-          alt={`Statua Batman, vista ${[1, 200, 400, 600, 800].indexOf(gallery) + 1}`}
-          onLoad={() => setFailed(false)}
-          onError={() => {
-            if (gallery !== 1) setGallery(1);
-            else setFailed(true);
-          }}
-        />
-      </section>
-    );
+  const final = reduced || progress > 0.91;
   return (
-    <div ref={container} className="statue-scroll">
+    <div
+      ref={container}
+      className={reduced ? "ds-statue-static" : "statue-scroll"}
+    >
       <section
         className="statue-stage"
         aria-label="Presentazione della statua Batman"
       >
-        <canvas
-          ref={canvas}
-          aria-label="Sequenza della statua Batman controllata dallo scorrimento"
-          role="img"
-        />
-        <div className="statue-story">
-          <p className="eyebrow">BATMAN / COLLECTOR’S EDITION</p>
-          <h1>
-            {progress < 0.08
-              ? "La leggenda prende forma."
-              : progress > 0.91
-                ? "L’eredità è tua."
-                : BEATS[beat][0]}
+        {reduced ? (
+          <img
+            className="ds-statue-poster"
+            src={source(800) + (retry ? "?retry=" + retry : "")}
+            alt="Statua Batman"
+            onLoad={() => setLoaded(true)}
+            onError={() => setFailed(true)}
+          />
+        ) : (
+          <canvas
+            ref={canvas}
+            aria-label="Sequenza della statua Batman controllata dallo scorrimento"
+            role="img"
+          />
+        )}
+        <div
+          className={
+            "ds-showreel-overlay " +
+            (final ? "ds-showreel-final" : "ds-showreel-text")
+          }
+          data-figma-node={final ? "49:497" : "49:496"}
+        >
+          <h1 className={final ? "ds-display" : "ds-heading-l ds-glow-text"}>
+            {final ? (
+              "L’EREDITÀ È TUA"
+            ) : (
+              <>
+                PRESENZA
+                <br />
+                LEGGENDARIA
+              </>
+            )}
           </h1>
-          <p>
-            {progress < 0.08
-              ? "87 anni nell’oscurità. Un’icona senza tempo."
-              : BEATS[beat][1]}
-          </p>
-        </div>
-        <div className="statue-bottom">
-          <span>
-            {progress < 0.08
-              ? "Scorri per scoprire la statua ↓"
-              : `${Math.round(progress * 100)}% / EDIZIONE ANNIVERSARIO`}
-          </span>
-          <button onClick={onPreorder}>
-            Checkout demo <span aria-hidden="true">↗</span>
-          </button>
+          {final ? (
+            <Button emphasis onClick={onPreorder}>
+              PREORDINA IL CAVALIERE
+            </Button>
+          ) : (
+            <p className="ds-body">
+              Non arredamento,
+              <br />
+              una presenza.
+            </p>
+          )}
         </div>
         {!loaded && (
-          <div className="statue-loading" role="status">
+          <div className="statue-loading legacy-pending" role="status">
             {failed ? (
               <>
                 <p>
                   Sequenza non disponibile. Puoi riprovare o proseguire con la
                   demo.
                 </p>
-                <button onClick={() => setRetry((r) => r + 1)}>Riprova</button>
+                <button
+                  onClick={() => {
+                    setFailed(false);
+                    setRetry((r) => r + 1);
+                  }}
+                >
+                  Riprova
+                </button>
               </>
             ) : (
               "Preparazione del primo fotogramma…"

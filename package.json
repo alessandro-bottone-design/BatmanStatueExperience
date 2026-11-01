@@ -11,12 +11,12 @@
     "lint": "./node_modules/.bin/eslint src tests vite.config.ts playwright.config.ts",
     "test": "./node_modules/.bin/tsx --test tests/*.test.ts",
     "test:e2e": "./node_modules/.bin/playwright test",
-    "check": "npm run typecheck && npm run lint && npm test && npm run build"
+    "check": "npm run typecheck && npm run lint && npm test && npm run build",
+    "build:ds-fixture": "./node_modules/.bin/vite build --config tests/fixtures/vite.config.ts"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
-    "lucide-react": "^0.546.0",
     "motion": "^12.23.24",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

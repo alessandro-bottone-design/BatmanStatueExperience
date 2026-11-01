@@ -1,9 +1,9 @@
 # Gameplay corrente
 
-180 secondi; cinque risposte in tre aree, distribuite 2+1+2. Pausa, caricamento e transizioni non consumano tempo. Entro 45 secondi per i primi due indizi si ottengono 60 secondi aggiuntivi una sola volta. Tempo di completamento inferiore a 90 secondi e maggiore di zero sblocca il premio demo `SPEEDRUN15`.
+Il flusso iniziale è start → storytelling → tutorial → missione. Il tutorial riusa la card ufficiale per quattro istruzioni. La missione concede 180 secondi e richiede cinque risposte in tre aree (2+1+2). Pausa, caricamento e transizioni non consumano tempo. Completando i primi due indizi entro 45 secondi si ricevono 60 secondi aggiuntivi una sola volta, senza badge. Il premio commerciale speedrun è stato rimosso.
 
-Gli hint rispettano pausa, scena e carta aperta: attivazione a 60 secondi, intensità successive a 80 e 100. La carta completata viene rimossa e il timer hint passa alla successiva.
+Gli hint rispettano pausa, scena e carta aperta: attivazione a 60 secondi, intensità successive a 80 e 100. La carta completata viene rimossa e il timer hint passa alla successiva. Il feedback corretto dura 850 ms di tempo attivo e sopravvive a una pausa.
 
-La visuale risponde al mouse ai bordi o alle frecce; i tasti nei campi e nei pulsanti non vengono intercettati. Gli indizi hanno controlli raggiungibili con Tab. Invio apre la carta; Tab naviga le risposte; Esc chiude il dialogo e ripristina il focus. Fuori dalla carta, Esc mette in pausa o riprende.
+La visuale risponde al mouse ai bordi o alle frecce; i tasti nei campi e nei pulsanti non vengono intercettati. I controlli degli indizi sono raggiungibili con Tab e portano la camera alla carta nell’ambiente. Invio la gira; Tab naviga le risposte; Esc la richiude e ripristina il focus. Fuori dalla carta, Esc mette in pausa o riprende.
 
-La sconfitta offre riprova e accesso diretto alla statua, senza assegnare vittoria o premio. Il refresh ricomincia la missione. Nessun A/B timer 120/240 secondi è implementato.
+La sconfitta propone il pulsante ufficiale di riprova, che riparte dalla start screen. Il refresh resetta la missione. I link `#statua` e `#checkout` aprono le rispettive sezioni; `#conferma` richiede un checkout demo valido e non persiste al refresh. Nessun A/B timer 120/240 secondi è implementato.

@@ -28,11 +28,21 @@ export default defineConfig({
     },
     { name: "webkit", use: { ...devices["Desktop Safari"] } },
   ],
-  webServer: process.env.BASE_URL
-    ? undefined
-    : {
-        command: "npm run preview -- --port 4173 --strictPort",
-        url: "http://127.0.0.1:4173",
-        reuseExistingServer: !process.env.CI,
-      },
+  webServer: [
+    ...(!process.env.BASE_URL
+      ? [
+          {
+            command: "npm run preview -- --port 4173 --strictPort",
+            url: "http://127.0.0.1:4173",
+            reuseExistingServer: !process.env.CI,
+          },
+        ]
+      : []),
+    {
+      command:
+        "./node_modules/.bin/vite preview --config tests/fixtures/vite.config.ts --port 4300 --host 127.0.0.1 --strictPort",
+      url: "http://127.0.0.1:4300/tests/fixtures/ds.html",
+      reuseExistingServer: !process.env.CI,
+    },
+  ],
 });

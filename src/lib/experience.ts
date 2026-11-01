@@ -1,5 +1,6 @@
 export type Phase =
-  | "intro"
+  | "start"
+  | "storytelling"
   | "tutorial"
   | "batcomputer"
   | "transition1"
@@ -20,26 +21,25 @@ export interface Experience {
   status: MissionStatus;
   completed: number;
   time: number;
-  speedrun: boolean;
   order: Order | null;
   run: number;
 }
 export type Action =
   | { type: "reset" }
+  | { type: "storytelling" }
   | { type: "tutorial" }
   | { type: "start" }
   | { type: "progress"; count: number }
   | { type: "next" }
   | { type: "fail" }
   | { type: "win"; time: number }
-  | { type: "navigate"; phase: "intro" | "showreel" | "checkout" | "thankyou" }
+  | { type: "navigate"; phase: "start" | "showreel" | "checkout" | "thankyou" }
   | { type: "purchase"; order: Order };
 export const initialExperience: Experience = {
-  phase: "intro",
+  phase: "start",
   status: "idle",
   completed: 0,
   time: 0,
-  speedrun: false,
   order: null,
   run: 0,
 };
@@ -47,8 +47,10 @@ export function experienceReducer(s: Experience, a: Action): Experience {
   switch (a.type) {
     case "reset":
       return { ...initialExperience, run: s.run + 1 };
+    case "storytelling":
+      return s.phase === "start" ? { ...s, phase: "storytelling" } : s;
     case "tutorial":
-      return s.phase === "intro" ? { ...s, phase: "tutorial" } : s;
+      return s.phase === "storytelling" ? { ...s, phase: "tutorial" } : s;
     case "start":
       return s.phase === "tutorial"
         ? {
@@ -70,10 +72,10 @@ export function experienceReducer(s: Experience, a: Action): Experience {
             phase:
               s.phase === "batcomputer"
                 ? "transition1"
-                : s.phase === "armeria"
-                  ? "transition2"
-                  : s.phase === "transition1"
-                    ? "armeria"
+                : s.phase === "transition1"
+                  ? "armeria"
+                  : s.phase === "armeria"
+                    ? "transition2"
                     : s.phase === "transition2"
                       ? "batmobile"
                       : s.phase,
@@ -82,47 +84,37 @@ export function experienceReducer(s: Experience, a: Action): Experience {
       return s.status === "active" ? { ...s, status: "failed" } : s;
     case "win":
       return s.status === "active" && s.completed === 5
-        ? {
-            ...s,
-            status: "succeeded",
-            phase: "reveal",
-            time: a.time,
-            speedrun: a.time > 0 && a.time < 90,
-          }
+        ? { ...s, status: "succeeded", phase: "reveal", time: a.time }
         : s;
-    case "navigate": {
+    case "navigate":
       if (a.phase === "thankyou")
         return {
           ...s,
           phase: s.order ? "thankyou" : "showreel",
           status: "idle",
         };
-      if (a.phase === "intro") return { ...initialExperience, run: s.run + 1 };
+      if (a.phase === "start") return { ...initialExperience, run: s.run + 1 };
       return {
         ...s,
         phase: a.phase,
         status: s.status === "succeeded" ? "succeeded" : "idle",
       };
-    }
     case "purchase":
       return s.phase === "checkout" &&
-        Number.isInteger(a.order.quantity) &&
-        a.order.quantity >= 1 &&
-        a.order.quantity <= 5 &&
-        Number.isFinite(a.order.total) &&
-        a.order.total > 0
+        a.order.quantity === 1 &&
+        a.order.total === 750
         ? { ...s, phase: "thankyou", order: a.order }
         : s;
   }
 }
 export function phaseFromHash(
   hash: string,
-): "intro" | "showreel" | "checkout" | "thankyou" {
+): "start" | "showreel" | "checkout" | "thankyou" {
   return hash === "#statua"
     ? "showreel"
     : hash === "#checkout"
       ? "checkout"
       : hash === "#conferma"
         ? "thankyou"
-        : "intro";
+        : "start";
 }
