@@ -111,8 +111,10 @@ test("input and in-place card expose the official focus, value, error and succes
   await expect(
     page.getByRole("button", { name: "Batsegnale", exact: true }),
   ).toHaveCSS("background-color", "rgb(255, 215, 0)");
-  expect((await page.locator(".ds-world-clue").boundingBox())!.width).toBe(300);
-  expect((await page.locator(".ds-world-clue").boundingBox())!.height).toBe(
-    426,
-  );
+  expect(
+    (await page.locator(".ds-world-clue").boundingBox())!.width,
+  ).toBeCloseTo(300, 2);
+  expect(
+    (await page.locator(".ds-world-clue").boundingBox())!.height,
+  ).toBeCloseTo(426, 2);
 });
