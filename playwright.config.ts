@@ -9,7 +9,12 @@ export default defineConfig({
   use: {
     baseURL: process.env.BASE_URL || "http://127.0.0.1:4173",
     viewport: { width: 1440, height: 900 },
-    trace: "retain-on-failure",
+    trace: {
+      mode: "retain-on-failure",
+      screenshots: false,
+      snapshots: true,
+      sources: true,
+    },
     screenshot: "only-on-failure",
   },
   projects: [
@@ -26,7 +31,15 @@ export default defineConfig({
         },
       },
     },
-    { name: "webkit", use: { ...devices["Desktop Safari"] } },
+    {
+      name: "webkit",
+      use: {
+        ...devices["Desktop Safari"],
+        // Match the 1x desktop displays of the other Linux software-rendered
+        // projects. Local macOS keeps Safari's native 2x profile.
+        deviceScaleFactor: process.env.CI ? 1 : 2,
+      },
+    },
   ],
   webServer: [
     ...(!process.env.BASE_URL

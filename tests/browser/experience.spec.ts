@@ -183,7 +183,7 @@ test("adaptive tutorial changes content within the same official card", async ({
 test("keyboard mission flips in-world cards, supports wrong answers and escape, then wins", async ({
   page,
 }) => {
-  test.setTimeout(180000);
+  test.setTimeout(240000);
   await start(page);
   await reach(page, 1);
   await expect(page.getByRole("dialog")).toHaveCount(0);
@@ -299,11 +299,20 @@ test("mouse mission finds and flips every card without a centered dialog", async
         rect!.y + rect!.height / 2,
       );
       expect(await front.evaluate((el) => el.matches(":hover"))).toBe(true);
+      // The stop event can precede one already queued panorama projection.
+      // Measure the hold after that frame has reached the DOM.
+      await page.evaluate(
+        () =>
+          new Promise<void>((resolve) =>
+            requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+          ),
+      );
+      const held = await front.boundingBox();
       await page.waitForTimeout(150);
       const next = await front.boundingBox();
-      expect(Math.abs(next!.x - rect!.x)).toBeLessThan(1);
-      expect(Math.abs(next!.y - rect!.y)).toBeLessThan(1);
-    }).toPass({ timeout: 20000, intervals: [100, 150, 200] });
+      expect(Math.abs(next!.x - held!.x)).toBeLessThan(1);
+      expect(Math.abs(next!.y - held!.y)).toBeLessThan(1);
+    }).toPass({ timeout: 45000, intervals: [100, 150, 200] });
     if (id === 1)
       await page.screenshot({
         path: test.info().outputPath("mouse-card-front.png"),

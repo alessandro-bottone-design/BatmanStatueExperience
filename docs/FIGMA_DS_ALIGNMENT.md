@@ -45,7 +45,7 @@ L’autore realizzerà questi tre stati in Figma. Non sono stati introdotti nuov
 
 ## Verifiche riproducibili
 
-`npm ci`, `npm run check` (TypeScript, ESLint, sette test di logica e build), `npm run build:ds-fixture`, `npm run test:e2e`. La CI esegue 21 scenari per Chromium, Firefox e WebKit su Linux con Xvfb. I due scenari componenti usano la fixture locale; gli altri 19 verificano l’applicazione. Non sono introdotti skip per browser.
+`npm ci`, `npm run check` (TypeScript, ESLint, sette test di logica e build), `npm run build:ds-fixture`, `npm run test:e2e`. Il confronto CI Linux usa display desktop 1x per tutti e tre i motori; la suite locale WebKit su macOS mantiene il profilo Safari 2x. La verifica Linux non costituisce una misura di prestazioni Retina con rendering software. La CI conserva tracce DOM e screenshot espliciti senza lo screencast continuo delle tracce, che sovraccarica il renderer software. La CI esegue 21 scenari per Chromium, Firefox e WebKit su Linux con Xvfb. I due scenari componenti usano la fixture locale; gli altri 19 verificano l’applicazione. Non sono introdotti skip per browser.
 
 Copertura: missione con mouse e tastiera, risposte errate/corrette, Esc, pausa durante feedback, timer e bonus senza badge, hint e fallimento; tutorial quattro passi; PayPal/carta, validazione, invio duplicato e cancellazione dell’elaborazione; navbar per fase; mobile touch nelle due orientazioni; frame mancanti, indisponibilità WebGL/video; scorrimento nelle finestre basse e larghezza equivalente a zoom 200%; axe sulle schermate principali; mute per sorgenti e beep.
 
