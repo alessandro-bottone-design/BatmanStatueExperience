@@ -6,14 +6,16 @@ import {
   useReducer,
   useRef,
   useState,
+  type CSSProperties,
 } from "react";
 import { MotionConfig, useReducedMotion } from "motion/react";
 import PauseOverlay from "./components/ui/PauseOverlay";
-import Navbar from "./components/layout/Navbar";
-import Footer from "./components/layout/Footer";
+import Navbar, { type NavPhase } from "./components/layout/Navbar";
 import IntroScreen from "./sections/IntroScreen";
+import StartScreen from "./sections/StartScreen";
 import BatcomputerBootOverlay from "./components/ui/BatcomputerBootOverlay";
 import FinalReveal from "./sections/FinalReveal";
+import { Button, Cursor, MobileNotice } from "./components/ui/DesignSystem";
 import { useDesktop } from "./hooks/useDesktop";
 import { useMissionTimer } from "./hooks/useMissionTimer";
 import {
@@ -33,7 +35,6 @@ const Statue = lazy(() => import("./components/cinematic/BatmanCamera"));
 const Checkout = lazy(() => import("./sections/Checkout"));
 const Confirmation = lazy(() => import("./sections/ThankYouPage"));
 const JokerAudio = lazy(() => import("./components/joker/JokerAudioManager"));
-
 export default function App() {
   const desktop = useDesktop();
   return desktop ? (
@@ -41,23 +42,7 @@ export default function App() {
       <Experience />
     </MotionConfig>
   ) : (
-    <main className="desktop-notice">
-      <div className="notice-mark" aria-hidden="true">
-        87
-      </div>
-      <p className="eyebrow">BATMAN / ANNIVERSARY EXPERIENCE</p>
-      <h1>
-        Gotham ti aspetta.
-        <br />
-        Da desktop.
-      </h1>
-      <p>
-        Questa esperienza è disponibile solo da computer desktop, con mouse o
-        tastiera. Apri questo stesso indirizzo dal tuo computer per entrare
-        nella Batcaverna.
-      </p>
-      <span className="caption">Progetto accademico · Alessandro Bottone</span>
-    </main>
+    <MobileNotice />
   );
 }
 function Experience() {
@@ -71,11 +56,11 @@ function Experience() {
       }),
   );
   const { phase, status, run } = state;
-  const [paused, setPaused] = useState(false);
-  const [muted, setMuted] = useState(false);
-  const [ready, setReady] = useState(false);
-  const reduced = !!useReducedMotion();
-  const heading = useRef<HTMLDivElement>(null);
+  const [paused, setPaused] = useState(false),
+    [muted, setMuted] = useState(false),
+    [ready, setReady] = useState(false);
+  const reduced = !!useReducedMotion(),
+    heading = useRef<HTMLDivElement>(null);
   const transition = phase === "transition1" || phase === "transition2";
   const scene =
     phase === "armeria" || phase === "transition2"
@@ -119,7 +104,7 @@ function Experience() {
     BatcavernAudio.setPaused(paused);
   }, [muted, paused]);
   useEffect(() => () => BatcavernAudio.stop(), []);
-  const navigate = useCallback((target: "intro" | "showreel" | "checkout") => {
+  const navigate = useCallback((target: "start" | "showreel" | "checkout") => {
     const hash =
       target === "showreel"
         ? "#statua"
@@ -146,14 +131,30 @@ function Experience() {
   }, [state.order]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && (playing || transition)) setPaused((p) => !p);
+      if (
+        e.key === "Escape" &&
+        (playing || transition || phase === "storytelling")
+      )
+        setPaused((p) => !p);
     };
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
-  }, [playing, transition]);
+  }, [playing, transition, phase]);
   const goStatue = () => navigate("showreel");
+  let navPhase: NavPhase | null = null;
+  if (playing || transition) navPhase = "gamification";
+  else if (phase === "storytelling") navPhase = "storytelling";
+  else if (phase === "reveal") navPhase = "win";
+  else if (phase === "showreel" || phase === "checkout" || phase === "thankyou")
+    navPhase = phase;
   return (
-    <div className="experience-shell" data-phase={phase}>
+    <div
+      className="experience-shell"
+      data-phase={phase}
+      style={
+        navPhase ? undefined : ({ "--nav-height": "0px" } as CSSProperties)
+      }
+    >
       <a
         className="skip-link"
         href="#experience-content"
@@ -164,50 +165,43 @@ function Experience() {
       >
         Salta al contenuto
       </a>
-      <Navbar
-        phase={
-          playing
-            ? "gamification"
-            : transition || phase === "tutorial"
-              ? "intro"
-              : phase === "reveal"
-                ? "reveal"
-                : phase === "showreel"
-                  ? "showreel"
-                  : phase === "checkout"
-                    ? "checkout"
-                    : phase === "thankyou"
-                      ? "thankyou"
-                      : "intro"
-        }
-        isMuted={muted}
-        onToggleMute={() => {
-          BatcavernAudio.start();
-          setMuted((m) => !m);
-        }}
-        isPaused={paused}
-        onTogglePause={() => setPaused((p) => !p)}
-        completedCount={state.completed}
-        timeLeft={playing ? time.timeLeft : undefined}
-        onPreorder={() => navigate("checkout")}
-        onBack={goStatue}
-      />
+      {navPhase && (
+        <Navbar
+          phase={navPhase}
+          isMuted={muted}
+          onToggleMute={() => {
+            BatcavernAudio.start();
+            setMuted((m) => !m);
+          }}
+          isPaused={paused}
+          onTogglePause={() => setPaused((p) => !p)}
+          completedCount={state.completed}
+          timeLeft={time.timeLeft}
+        />
+      )}
       <main id="experience-content" ref={heading} tabIndex={-1}>
-        <div inert={paused ? true : undefined}>
+        <div
+          inert={paused ? true : undefined}
+          aria-hidden={paused ? true : undefined}
+        >
           <Suspense
             fallback={
-              <div className="loading-screen" role="status">
+              <div className="loading-screen legacy-pending" role="status">
                 Inizializzazione della Batcaverna…
               </div>
             }
           >
-            {phase === "intro" && (
-              <IntroScreen
-                onBegin={() => {
+            {phase === "start" && (
+              <StartScreen
+                onStart={() => {
                   BatcavernAudio.start();
-                  dispatch({ type: "tutorial" });
+                  dispatch({ type: "storytelling" });
                 }}
-                onViewStatue={goStatue}
+              />
+            )}
+            {phase === "storytelling" && (
+              <IntroScreen
+                onBegin={() => dispatch({ type: "tutorial" })}
                 isPaused={paused}
               />
             )}
@@ -216,7 +210,7 @@ function Experience() {
                 onComplete={() => dispatch({ type: "start" })}
               />
             )}
-            {playing && status === "active" && (
+            {playing && (
               <ErrorBoundary key={run + scene} onExit={goStatue}>
                 <Panorama
                   key={run + scene}
@@ -247,19 +241,12 @@ function Experience() {
                 onEnded={() => dispatch({ type: "next" })}
               />
             )}
-            {phase === "reveal" && (
-              <FinalReveal timeTaken={state.time} onComplete={goStatue} />
-            )}
+            {phase === "reveal" && <FinalReveal onComplete={goStatue} />}
             {phase === "showreel" && (
-              <>
-                <Statue onPreorder={() => navigate("checkout")} />
-                <Footer />
-              </>
+              <Statue onPreorder={() => navigate("checkout")} />
             )}
             {phase === "checkout" && (
               <Checkout
-                speedrunUnlocked={state.speedrun}
-                onClose={goStatue}
                 onSuccess={(quantity, total) => {
                   dispatch({ type: "purchase", order: { quantity, total } });
                   history.pushState(null, "", "#conferma");
@@ -267,12 +254,7 @@ function Experience() {
               />
             )}
             {phase === "thankyou" && state.order && (
-              <Confirmation
-                quantity={state.order.quantity}
-                totalPaid={state.order.total}
-                onReturnHome={() => navigate("intro")}
-                onViewStatue={goStatue}
-              />
+              <Confirmation onReturnHome={() => navigate("start")} />
             )}
             {playing && !reduced && (
               <JokerAudio
@@ -283,31 +265,35 @@ function Experience() {
             )}
           </Suspense>
           {status === "failed" && (
-            <section className="result-screen" aria-labelledby="failed-title">
-              <p className="eyebrow">MISSIONE TERMINATA</p>
-              <h1 id="failed-title">Il tempo è scaduto.</h1>
-              <p>
-                Gotham ha ancora bisogno di te. Riprova, oppure scopri la
-                statua.
+            <section
+              className="ds-loss ds-centered"
+              aria-labelledby="failed-title"
+              data-figma-node="132:413"
+            >
+              <h1
+                id="failed-title"
+                className="ds-display ds-purple ds-glow-text"
+              >
+                MISSIONE FALLITA
+              </h1>
+              <p className="ds-body">
+                Gotham ha pagato il prezzo!
+                <br />
+                Ora la Bat Caverna non esiste più!
               </p>
-              <div className="action-row">
-                <button onClick={() => navigate("intro")}>
-                  Riprova la missione
-                </button>
-                <button className="secondary" onClick={goStatue}>
-                  Scopri la statua
-                </button>
-              </div>
+              <Button
+                tone="secondary"
+                emphasis
+                onClick={() => navigate("start")}
+              >
+                RIPROVA LA MISSIONE
+              </Button>
             </section>
           )}
         </div>
-        {paused && <PauseOverlay onResume={() => setPaused(false)} />}
-        {status === "active" && time.bonusTimeGranted && (
-          <p className="bonus-note" role="status">
-            Bonus esplorazione: +60 secondi
-          </p>
-        )}
+        {paused && <PauseOverlay />}
       </main>
+      <Cursor />
     </div>
   );
 }

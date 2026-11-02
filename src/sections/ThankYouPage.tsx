@@ -1,51 +1,48 @@
-import { euro } from "../lib/checkout";
-interface Props {
-  quantity: number;
-  totalPaid: number;
-  onReturnHome: () => void;
-  onViewStatue: () => void;
-}
+import { Button } from "../components/ui/DesignSystem";
 export default function ThankYouPage({
-  quantity,
-  totalPaid,
   onReturnHome,
-  onViewStatue,
-}: Props) {
+}: {
+  onReturnHome: () => void;
+}) {
+  const items = [
+    ["ID TRANSAZIONE", "ORD-BW-4019"],
+    ["PRODOTTO", "BATMAN STATUE"],
+    ["STATO PROTOCOLLO", "ORDINE CONFERMATO"],
+    ["SPEDIZIONE", "PREVISTA PER IL 15/01/2027"],
+    ["DATA", "12/12/2026"],
+    ["QUANTITÀ", "X1"],
+  ];
   return (
-    <section className="confirmation-page">
-      <p className="eyebrow">WAYNE COLLECTION / FINE DEL PERCORSO</p>
-      <span className="confirmation-symbol" aria-hidden="true">
-        ✓
-      </span>
-      <h1>
-        Simulazione
-        <br />
-        completata.
-      </h1>
-      <p>
-        La leggenda continua. Grazie per aver esplorato questo progetto
-        accademico.
-      </p>
-      <dl className="confirmation-summary">
-        <div>
-          <dt>Quantità dimostrativa</dt>
-          <dd>{quantity}</dd>
-        </div>
-        <div>
-          <dt>Totale simulato</dt>
-          <dd>{euro(totalPaid)}</dd>
-        </div>
-      </dl>
-      <p className="demo-banner">
+    <>
+      <section
+        className="ds-thankyou ds-centered"
+        data-figma-node="58:528"
+        aria-labelledby="thankyou-title"
+      >
+        <header>
+          <h1 id="thankyou-title" className="ds-display ds-glow-text">
+            MISSIONE
+            <br />
+            COMPLETATA
+          </h1>
+          <p className="ds-body">
+            Il tuo ordine è stato registrato con successo.
+          </p>
+        </header>
+        <dl className="ds-thankyou-card">
+          {items.map(([label, value]) => (
+            <div key={label}>
+              <dt className="ds-body-space ds-glow-text">{label}</dt>
+              <dd className="ds-body-space ds-white">{value}</dd>
+            </div>
+          ))}
+        </dl>
+        <Button onClick={onReturnHome}>TORNA ALLA HOME</Button>
+      </section>
+      <p className="demo-banner legacy-pending ds-confirmation-notice">
         Nessun addebito effettuato. Nessun ordine creato e nessun dato del form
-        salvato o inviato.
+        salvato o inviato. ID e date sono esempi fittizi.
       </p>
-      <div className="action-row">
-        <button onClick={onViewStatue}>Rivedi la statua</button>
-        <button className="secondary" onClick={onReturnHome}>
-          Torna all’inizio
-        </button>
-      </div>
-    </section>
+    </>
   );
 }

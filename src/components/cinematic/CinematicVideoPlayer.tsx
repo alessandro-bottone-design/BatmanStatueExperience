@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 interface Props {
   src: string;
   onEnded: () => void;
@@ -19,12 +19,15 @@ export default function CinematicVideoPlayer({
   const callback = useRef(onEnded);
   callback.current = onEnded;
   const [failed, setFailed] = useState(false);
-  const finish = () => {
+  const finish = useCallback(() => {
     if (!done.current && !isPaused) {
       done.current = true;
       callback.current();
     }
-  };
+  }, [isPaused]);
+  useEffect(() => {
+    if (reducedMotion && !isPaused) finish();
+  }, [reducedMotion, isPaused, finish]);
   useEffect(() => {
     const el = video.current;
     if (!el || reducedMotion) return;
@@ -48,18 +51,20 @@ export default function CinematicVideoPlayer({
           onError={() => setFailed(true)}
         />
       )}
-      <div className="transition-controls">
-        <p>
-          {failed
-            ? "Il filmato non è disponibile. Puoi continuare."
-            : reducedMotion
-              ? "Modalità a movimento ridotto"
-              : "Trasferimento alla prossima area"}
-        </p>
-        <button disabled={isPaused} onClick={finish}>
-          {label}
-        </button>
-      </div>
+      {failed && (
+        <div className="transition-controls legacy-pending">
+          <p>
+            {failed
+              ? "Il filmato non è disponibile. Puoi continuare."
+              : reducedMotion
+                ? "Modalità a movimento ridotto"
+                : "Trasferimento alla prossima area"}
+          </p>
+          <button disabled={isPaused} onClick={finish}>
+            {label}
+          </button>
+        </div>
+      )}
     </section>
   );
 }

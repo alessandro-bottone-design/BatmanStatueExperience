@@ -23,7 +23,7 @@ const BATCOMPUTER_RIDDLES = [
   {
     id: 1,
     riddle:
-      "Non è un uomo, non è un mostro, non è un re… eppure tutta Gotham trattiene il fiato quando compare nel cielo notturno.",
+      "“Non è un uomo, non è un \nmostro, non è un re... eppure\ntutta Gotham trattiene il fiato \nquando compare nel cielo notturno.”",
     options: ["Joker", "Batsegnale", "Pinguino", "Arkham"],
     correctAnswer: "Batsegnale",
   },
@@ -76,43 +76,6 @@ const POSITIONS: Record<PanoramaScene, [number, number, number][]> = {
     [120, 30, -170],
   ],
 };
-function Clue({
-  position,
-  id,
-  hint,
-  onOpen,
-  disabled,
-}: {
-  position: [number, number, number];
-  id: number;
-  hint: boolean;
-  onOpen: () => void;
-  disabled: boolean;
-}) {
-  return (
-    <group position={position}>
-      <Html distanceFactor={200} center>
-        <button
-          className={`clue-card ${hint ? "clue-hint" : ""}`}
-          disabled={disabled}
-          onPointerDown={(event) => {
-            if (event.button === 0)
-              event.currentTarget.setPointerCapture(event.pointerId);
-          }}
-          onClick={onOpen}
-          aria-label={`Apri indizio ${id}`}
-        >
-          <img
-            src="/assets/images/JollyJokerCard_Front.jpg"
-            alt=""
-            draggable={false}
-          />
-          <span>INDIZIO {id}</span>
-        </button>
-      </Html>
-    </group>
-  );
-}
 export default function SharedPanoramaCanvas({
   scene,
   onProgress,
@@ -130,6 +93,9 @@ export default function SharedPanoramaCanvas({
   const [retry, setRetry] = useState(0);
   const [completed, setCompleted] = useState<number[]>([]);
   const [active, setActive] = useState<number | null>(null);
+  const [focusTarget, setFocusTarget] = useState<
+    [number, number, number] | null
+  >(null);
   const [contextLost, setContextLost] = useState(false);
   const [graphics, setGraphics] = useState<
     "checking" | "available" | "unavailable"
@@ -144,7 +110,6 @@ export default function SharedPanoramaCanvas({
       setGraphics("unavailable");
     }
   }, [retry]);
-  const [feedback, setFeedback] = useState("");
   useEffect(() => {
     const failedCreation = () => {
       onReady?.(false);
@@ -279,13 +244,11 @@ export default function SharedPanoramaCanvas({
       const next = [...completed, id];
       setCompleted(next);
       setActive(null);
-      setFeedback("Risposta corretta. Indizio raccolto.");
       onProgress(baseCompleted + next.length);
       if (next.length === riddles.length) onNext();
     },
     [completed, isPaused, baseCompleted, onProgress, onNext, riddles.length],
   );
-  const current = riddles.find((r) => r.id === active);
   if (graphics === "unavailable")
     return (
       <section className="result-screen">
@@ -341,10 +304,7 @@ export default function SharedPanoramaCanvas({
     );
   return (
     <section className="panorama-scene" aria-label={`Esplorazione: ${scene}`}>
-      <div
-        aria-hidden={active !== null || isPaused}
-        inert={active !== null || isPaused ? true : undefined}
-      >
+      <div aria-hidden={isPaused} inert={isPaused ? true : undefined}>
         <Canvas
           gl={{ antialias: true, toneMapping: THREE.NoToneMapping }}
           onCreated={({ gl }) => {
@@ -362,6 +322,7 @@ export default function SharedPanoramaCanvas({
           <PerspectiveCamera makeDefault position={[0, 0, 0.1]} fov={75} />
           <MouseLookControls
             enabled={active === null && !isPaused && !loading}
+            focusTarget={focusTarget}
           />
           {texture && (
             <mesh scale={[-1, 1, 1]} rotation={[0, -Math.PI / 2, 0]}>
@@ -372,39 +333,60 @@ export default function SharedPanoramaCanvas({
           {riddles.map(
             (r, i) =>
               !completed.includes(r.id) && (
-                <Clue
-                  key={r.id}
-                  position={POSITIONS[scene][i]}
-                  id={r.id}
-                  hint={hint.hintCardId === r.id}
-                  onOpen={() => setActive(r.id)}
-                  disabled={isPaused || loading}
-                />
+                <group position={POSITIONS[scene][i]} key={r.id}>
+                  <Html center zIndexRange={[30, 20]}>
+                    <JokerCard
+                      {...r}
+                      active={active === r.id}
+                      hint={hint.hintCardId === r.id}
+                      disabled={
+                        isPaused ||
+                        loading ||
+                        (active !== null && active !== r.id)
+                      }
+                      onOpen={() => setActive(r.id)}
+                      onClose={() => setActive(null)}
+                      onSuccess={complete}
+                      onKeyboardFocus={() =>
+                        setFocusTarget([...POSITIONS[scene][i]])
+                      }
+                    />
+                  </Html>
+                </group>
               ),
           )}
         </Canvas>
-        <div className="scene-caption">
-          <p className="eyebrow">BATCAVERNA / {scene}</p>
-          <p>
-            Muovi il mouse ai bordi · Frecce: visuale · Tab: indizi · Esc: pausa
-          </p>
-          <p role="status">
-            {completed.length} / {riddles.length} indizi raccolti. {feedback}
-          </p>
-        </div>
         <div
-          className="keyboard-clues"
-          aria-label="Indizi raggiungibili da tastiera"
+          className="sr-only"
+          aria-label="Raggiungi gli indizi con la tastiera"
         >
-          {riddles.map((r) => (
-            <button
-              key={r.id}
-              disabled={completed.includes(r.id) || loading || isPaused}
-              onClick={() => setActive(r.id)}
-            >
-              {completed.includes(r.id) ? "✓" : "Apri"} indizio {r.id}
-            </button>
-          ))}
+          {riddles
+            .filter((r) => !completed.includes(r.id))
+            .map((r) => (
+              <button
+                key={r.id}
+                disabled={isPaused || loading || active !== null}
+                onFocus={(event) => {
+                  const target = event.currentTarget;
+                  const index = riddles.findIndex((item) => item.id === r.id);
+                  setFocusTarget([...POSITIONS[scene][index]]);
+                  let attempts = 0;
+                  const transfer = () => {
+                    if (document.activeElement !== target) return;
+                    const card = document.querySelector<HTMLButtonElement>(
+                      '[data-clue-id="' + r.id + '"] .clue-card',
+                    );
+                    if (card && card.getClientRects().length)
+                      card.focus({ preventScroll: true });
+                    else if (attempts++ < 60) requestAnimationFrame(transfer);
+                  };
+                  requestAnimationFrame(transfer);
+                }}
+                onClick={() => setActive(r.id)}
+              >
+                Raggiungi indizio {r.id}
+              </button>
+            ))}
         </div>
       </div>
       <JokerHintSystem {...hint} isMuted={isMuted} isPaused={isPaused} />
@@ -412,16 +394,6 @@ export default function SharedPanoramaCanvas({
         <div className="loading-screen" role="status">
           Sincronizzazione area…
         </div>
-      )}
-      {current && (
-        <JokerCard
-          key={current.id}
-          {...current}
-          onClose={() => setActive(null)}
-          onSuccess={complete}
-          isFlipped
-          isPaused={isPaused}
-        />
       )}
     </section>
   );

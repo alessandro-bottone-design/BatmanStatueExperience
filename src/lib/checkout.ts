@@ -1,63 +1,93 @@
 export const PRICE = 700,
-  SHIPPING = 60;
+  SHIPPING = 50;
+export type PaymentMethod = "" | "paypal" | "card";
 export const EMPTY_FORM = {
   fullName: "",
-  email: "",
-  phone: "",
-  address: "",
-  civico: "",
-  cap: "",
-  city: "",
+  region: "",
+  birthDate: "",
   provincia: "",
-  nazione: "Italia",
-  billingAddress: "",
+  email: "",
+  address: "",
+  password: "",
+  city: "",
+  phone: "",
+  cap: "",
+  cardOwner: "",
   cardNumber: "",
   cardExpiry: "",
-  cardOwner: "",
   cardCvv: "",
 };
 export type CheckoutData = typeof EMPTY_FORM;
+export type CheckoutErrors = Partial<
+  Record<keyof CheckoutData | "paymentMethod", string>
+>;
 export function validateCheckout(
   data: CheckoutData,
-  billing = false,
+  method: PaymentMethod,
   now = new Date(),
-) {
-  const errors: Partial<Record<keyof CheckoutData, string>> = {};
-  for (const key of Object.keys(data) as (keyof CheckoutData)[])
-    if (key !== "billingAddress" && !data[key].trim())
+): CheckoutErrors {
+  const errors: CheckoutErrors = {};
+  const personal: (keyof CheckoutData)[] = [
+    "fullName",
+    "region",
+    "birthDate",
+    "provincia",
+    "email",
+    "address",
+    "password",
+    "city",
+    "phone",
+    "cap",
+  ];
+  const required =
+    method === "card"
+      ? ([
+          ...personal,
+          "cardOwner",
+          "cardNumber",
+          "cardExpiry",
+          "cardCvv",
+        ] as (keyof CheckoutData)[])
+      : personal;
+  for (const key of required)
+    if (!data[key].trim())
       errors[key] = "Compila questo campo con dati fittizi.";
+  if (!method) errors.paymentMethod = "Seleziona un metodo dimostrativo.";
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim()))
-    errors.email = "Inserisci un indirizzo email nel formato nome@example.com.";
+    errors.email = "Inserisci un indirizzo email valido.";
   if (
     !/^\+?[\d ()-]{7,20}$/.test(data.phone.trim()) ||
     data.phone.replace(/\D/g, "").length < 7
   )
-    errors.phone = "Inserisci almeno 7 cifre per il telefono dimostrativo.";
+    errors.phone = "Inserisci almeno 7 cifre.";
   if (!/^\d{5}$/.test(data.cap.trim()))
-    errors.cap = "Il CAP dimostrativo deve contenere 5 cifre.";
-  const number = data.cardNumber.replace(/\s/g, "");
-  if (!/^\d{13,19}$/.test(number))
-    errors.cardNumber = "Inserisci da 13 a 19 cifre fittizie, senza lettere.";
-  const match = /^(0[1-9]|1[0-2])\/(\d{2})$/.exec(data.cardExpiry.trim());
+    errors.cap = "Inserisci un codice postale di 5 cifre.";
+  const birth = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(data.birthDate);
+  const date = birth ? new Date(+birth[3], +birth[2] - 1, +birth[1]) : null;
   if (
-    !match ||
-    new Date(2000 + Number(match[2]), Number(match[1]), 1).getTime() <=
-      new Date(now.getFullYear(), now.getMonth(), 1).getTime()
+    !birth ||
+    !date ||
+    date.getFullYear() !== +birth[3] ||
+    date.getMonth() !== +birth[2] - 1 ||
+    date.getDate() !== +birth[1] ||
+    date > now
   )
-    errors.cardExpiry = "Usa MM/AA con una scadenza corrente o futura.";
-  if (!/^\d{3,4}$/.test(data.cardCvv.trim()))
-    errors.cardCvv = "Inserisci 3 o 4 cifre fittizie.";
-  if (billing && !data.billingAddress.trim())
-    errors.billingAddress = "Inserisci l’indirizzo di fatturazione fittizio.";
+    errors.birthDate = "Usa GG/MM/AAAA con una data valida.";
+  if (method === "card") {
+    if (!/^\d{13,19}$/.test(data.cardNumber.replace(/\s/g, "")))
+      errors.cardNumber = "Inserisci da 13 a 19 cifre fittizie.";
+    const match = /^(0[1-9]|1[0-2])\/(\d{2})$/.exec(data.cardExpiry.trim());
+    if (
+      !match ||
+      new Date(2000 + +match[2], +match[1], 1) <=
+        new Date(now.getFullYear(), now.getMonth(), 1)
+    )
+      errors.cardExpiry = "Usa MM/AA con una scadenza corrente o futura.";
+    if (!/^\d{3,4}$/.test(data.cardCvv.trim()))
+      errors.cardCvv = "Inserisci 3 o 4 cifre fittizie.";
+  }
   return errors;
 }
-export function orderTotal(quantity: number, discount: boolean) {
-  return PRICE * quantity * (discount ? 0.85 : 1) + SHIPPING;
+export function orderTotal() {
+  return PRICE + SHIPPING;
 }
-export function canApplyPromo(code: string, unlocked: boolean) {
-  return unlocked && code.trim().toUpperCase() === "SPEEDRUN15";
-}
-export const euro = (value: number) =>
-  new Intl.NumberFormat("it-IT", { style: "currency", currency: "EUR" }).format(
-    value,
-  );

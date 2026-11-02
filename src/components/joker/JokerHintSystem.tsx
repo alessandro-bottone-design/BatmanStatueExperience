@@ -15,7 +15,7 @@ export default function JokerHintSystem({
     if (hintActive && !isMuted && !isPaused) BatcavernAudio.beep(440);
   }, [hintActive, isMuted, isPaused]);
   return hintActive && !isPaused ? (
-    <p className="hint-notice" role="status">
+    <p className="sr-only" role="status">
       Un indizio ti aspetta. Cerca la carta evidenziata oppure raggiungila con
       Tab. <span className="sr-only">Livello aiuto {hintPhase}</span>
     </p>

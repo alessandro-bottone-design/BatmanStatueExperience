@@ -1,76 +1,63 @@
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
-const BRIEFING = [
-  "Batman… ho lasciato un regalino nella tua preziosa caverna.",
-  "Trova i miei cinque indizi. Dimostra che sai ancora giocare.",
-  "Tre minuti. Risolvi gli enigmi prima che sia troppo tardi.",
-];
-interface Props {
-  onBegin: () => void;
-  onViewStatue: () => void;
-  isPaused?: boolean;
-}
+import { Button, Timer } from "../components/ui/DesignSystem";
 export default function IntroScreen({
   onBegin,
-  onViewStatue,
   isPaused,
-}: Props) {
+}: {
+  onBegin: () => void;
+  isPaused: boolean;
+}) {
   const reduced = useReducedMotion();
-  const [step, setStep] = useState(reduced ? 3 : 0);
-  const remaining = useRef(4000);
+  const [final, setFinal] = useState(false);
+  const remaining = useRef(12000);
   useEffect(() => {
-    if (isPaused || step >= 3) return;
+    if (final || isPaused || reduced) return;
     const started = performance.now();
     let fired = false;
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       fired = true;
-      remaining.current = 4000;
-      setStep((s) => s + 1);
+      setFinal(true);
     }, remaining.current);
     return () => {
-      clearTimeout(t);
+      clearTimeout(timer);
       if (!fired)
         remaining.current = Math.max(
           0,
-          remaining.current - (performance.now() - started),
+          remaining.current - performance.now() + started,
         );
     };
-  }, [step, isPaused]);
+  }, [final, isPaused, reduced]);
   return (
-    <section className="intro-editorial">
-      <div className="intro-art" aria-hidden="true" />
-      <div className="intro-copy">
-        <p className="eyebrow">GOTHAM CITY / SEGNALE INTERCETTATO</p>
-        <p className="edition-mark">
-          87<span>ANNI DI LEGGENDA</span>
-        </p>
-        <h1>
-          Entra
-          <br />
-          nell’oscurità.
-        </h1>
-        <p className="intro-message" aria-live="polite">
-          {BRIEFING[Math.min(step, 2)]}
-        </p>
-        <div className="action-row">
-          {step >= 3 ? (
-            <button disabled={isPaused} onClick={onBegin}>
-              Accetta la sfida <span aria-hidden="true">↗</span>
-            </button>
-          ) : (
-            <button disabled={isPaused} onClick={() => setStep(3)}>
-              Salta intro <span aria-hidden="true">→</span>
-            </button>
-          )}
-          <button className="secondary" onClick={onViewStatue}>
-            Scopri la statua
-          </button>
-        </div>
-        <p className="caption">
-          Esperienza desktop · Mouse o tastiera · Audio facoltativo
-        </p>
-        <p className="caption">Ricaricando la pagina la missione ricomincia.</p>
-      </div>
+    <section
+      className="ds-storytelling ds-centered"
+      data-figma-node={final ? "49:458" : "49:463"}
+    >
+      {final ? (
+        <>
+          <Timer seconds={180} />
+          <Button tone="secondary" onClick={onBegin} disabled={isPaused}>
+            ACCETTA LA SFIDA
+          </Button>
+        </>
+      ) : (
+        <>
+          <h1 className="ds-display ds-purple ds-glow-text">
+            BATMAN...
+            <br />
+            HO LASCIATO UN REGALINO
+            <br />
+            NELLA TUA PREZIOSA CAVERNA...
+          </h1>
+          <Button
+            tone="secondary"
+            onClick={() => setFinal(true)}
+            disabled={isPaused}
+          >
+            SALTA L'INTRO
+          </Button>
+        </>
+      )}
     </section>
   );
 }

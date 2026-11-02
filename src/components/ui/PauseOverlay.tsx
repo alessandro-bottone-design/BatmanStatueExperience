@@ -1,35 +1,23 @@
-import { useEffect, useRef } from "react";
-export default function PauseOverlay({ onResume }: { onResume: () => void }) {
-  const button = useRef<HTMLButtonElement>(null);
+import { useEffect } from "react";
+export default function PauseOverlay() {
   useEffect(() => {
-    const previous = document.activeElement as HTMLElement;
-    const nav = document.querySelector<HTMLElement>("nav");
-    if (nav) nav.inert = true;
-    button.current?.focus();
-    return () => {
-      if (nav) nav.inert = false;
-      previous?.focus();
-    };
+    const previous = document.activeElement as HTMLElement | null;
+    document
+      .querySelector<HTMLButtonElement>(
+        'button[aria-label="Riprendi esperienza"]',
+      )
+      ?.focus();
+    return () => previous?.focus();
   }, []);
   return (
     <section
-      className="pause-screen"
-      role="dialog"
-      aria-modal="true"
+      className="ds-pause ds-centered"
       aria-labelledby="pause-title"
-      onKeyDown={(e) => {
-        if (e.key === "Tab") {
-          e.preventDefault();
-          button.current?.focus();
-        }
-      }}
+      data-figma-node="155:331"
     >
-      <p className="eyebrow">WAYNE TECH / STANDBY</p>
-      <h2 id="pause-title">Esperienza in pausa</h2>
-      <p>Tempo, sequenze e audio sono sospesi.</p>
-      <button ref={button} onClick={onResume}>
-        Riprendi
-      </button>
+      <h1 id="pause-title" className="ds-display ds-purple ds-glow-text">
+        MISSIONE IN PAUSA
+      </h1>
     </section>
   );
 }
