@@ -32,17 +32,29 @@ export default function JokerCard({
   const callback = useRef(onSuccess);
   callback.current = onSuccess;
   const correct = chosen === correctAnswer;
-  const wasActive = useRef(false);
+  const restoreFront = useRef(false);
   const remainingSuccess = useRef(850);
   useEffect(() => {
-    if (active)
-      answers.current?.querySelector<HTMLButtonElement>("button")?.focus();
-    else {
-      setChosen(null);
-      if (wasActive.current) front.current?.focus({ preventScroll: true });
-    }
-    wasActive.current = active;
+    if (active) restoreFront.current = true;
+    else setChosen(null);
   }, [active]);
+  useEffect(() => {
+    if (disabled || (!active && !restoreFront.current)) return;
+    let frame = 0;
+    const focusVisibleFace = () => {
+      const face = active ? answers.current : front.current;
+      if (!face) return;
+      if (getComputedStyle(face).visibility === "visible") {
+        const target = active
+          ? face.querySelector<HTMLButtonElement>("button:not(:disabled)")
+          : front.current;
+        target?.focus({ preventScroll: true });
+        if (!active) restoreFront.current = false;
+      } else frame = requestAnimationFrame(focusVisibleFace);
+    };
+    frame = requestAnimationFrame(focusVisibleFace);
+    return () => cancelAnimationFrame(frame);
+  }, [active, disabled]);
   useEffect(() => {
     if (!correct) {
       remainingSuccess.current = 850;

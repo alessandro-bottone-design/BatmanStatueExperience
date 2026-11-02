@@ -28,7 +28,21 @@ export function MouseLookControls({
         if (focused instanceof HTMLElement && focused.matches(".clue-card"))
           focused.blur();
       }
-      if (clue && e.clientX > 12 && e.clientX < innerWidth - 12) {
+      const nearClue = Array.from(
+        document.querySelectorAll(".ds-world-clue"),
+      ).some((el) => {
+        const r = el.getBoundingClientRect();
+        return (
+          r.width > 0 &&
+          e.clientX >= r.left - 40 &&
+          e.clientX <= r.right + 40 &&
+          e.clientY >= r.top - 40 &&
+          e.clientY <= r.bottom + 40
+        );
+      });
+      // Stop before a projected card reaches the pointer, including the one
+      // pending compositor frame on slower WebKit renderers.
+      if ((clue || nearClue) && e.clientX > 12 && e.clientX < innerWidth - 12) {
         pointer.current = { x: 0, y: 0 };
         return;
       }

@@ -25,6 +25,8 @@ Le immagini in `figma/reference` sono esportazioni di riferimento e non vengono 
 
 Token: colori 1:47, tipografia 1:167; bottoni 9:83; icone 22:265; bottoni icona 11:314; timer 16:576; input 75:1700/1697/1698/1699; pagamento 101:1942; cursore 49:499. I componenti riusabili e le varianti sono verificati nella fixture separata `tests/fixtures/ds.tsx`, esclusa dalla build pubblica.
 
+La rotazione controlla esplicitamente la visibilità delle due facce, anche sui compositor software WebKit, e trasferisce il focus solo quando la faccia è visibile. La camera si ferma in prossimità delle carte per compensare il frame di proiezione in ritardo. I test della pausa usano un clock fermo e i test di missione verificano il progresso persistente; visibilità e feedback restano verificati separatamente sul componente e durante la pausa.
+
 ## Asset e geometria
 
 [Manifest con dimensioni native, byte e SHA-256](figma/assets.json). Gli SVG locali sono gli export originali Figma; vengono usati come immagini o maschere alfa senza modificare i tracciati. I wrapper dei loghi compensano le aree trasparenti dei bagliori: slot Sideshow 179.683×65.151 e Batman 147×86, immagini native rispettivamente 307.683×193.151 e 255×194. Il cursore conserva il file 173.433×146.288 nel suo slot 77×50. Icone 30×30 (audio-off 30×29), pulsanti icona 40×40 più outline esterno. Carte 300×426 con immagine 260×386; il retro segue i tre ritagli del componente Figma.

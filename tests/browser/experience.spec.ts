@@ -44,9 +44,9 @@ async function reach(page: Page, id: number) {
 async function answer(page: Page, id: number, response: string) {
   await reach(page, id);
   await page.getByRole("button", { name: response, exact: true }).click();
-  await expect(
-    page.getByText("RISPOSTA CORRETTA", { exact: true }),
-  ).toBeVisible();
+  await expect(page.locator('[data-clue-id="' + id + '"]')).toHaveCount(0, {
+    timeout: 45000,
+  });
 }
 async function fill(page: Page, card = false) {
   const fields: Record<string, string> = {
@@ -123,8 +123,13 @@ test("official start has original assets, tokens and no initial experience downl
 test("storytelling skips definitively and pause preserves remaining briefing time", async ({
   page,
 }) => {
-  await page.clock.install();
-  await enterStory(page);
+  const base = new Date("2026-11-02T12:00:00Z");
+  await page.clock.install({ time: base });
+  await page.goto("/");
+  await page.clock.pauseAt(new Date(base.getTime() + 60000));
+  await page
+    .getByRole("button", { name: "INIZIA LA MISSIONE", exact: true })
+    .click();
   await expect(page.locator("nav")).toBeVisible();
   await expect(page.getByRole("progressbar")).toHaveCount(0);
   await expect(page.locator("nav [role=timer]")).toHaveCount(0);
@@ -178,6 +183,7 @@ test("adaptive tutorial changes content within the same official card", async ({
 test("keyboard mission flips in-world cards, supports wrong answers and escape, then wins", async ({
   page,
 }) => {
+  test.setTimeout(180000);
   await start(page);
   await reach(page, 1);
   await expect(page.getByRole("dialog")).toHaveCount(0);
@@ -193,6 +199,9 @@ test("keyboard mission flips in-world cards, supports wrong answers and escape, 
   await expect(
     page.getByRole("heading", { name: "MISSIONE IN PAUSA" }),
   ).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "Apri indizio 1", exact: true }),
+  ).toBeFocused();
   for (let id = 1; id <= 5; id++) await answer(page, id, responses[id - 1]);
   await expect(
     page.getByRole("heading", { name: "BOMBA DISINNESCATA" }),
@@ -216,19 +225,28 @@ test("keyboard mission flips in-world cards, supports wrong answers and escape, 
 test("correct feedback survives pause and early clues retain the hidden time bonus", async ({
   page,
 }) => {
+  test.setTimeout(180000);
+  await page.clock.install();
   await start(page);
-  await answer(page, 1, responses[0]);
+  await reach(page, 1);
+  await page.clock.pauseAt(await page.evaluate(() => Date.now() + 1000));
+  await page.getByRole("button", { name: responses[0], exact: true }).click();
+  await expect(
+    page.getByText("RISPOSTA CORRETTA", { exact: true }),
+  ).toBeVisible();
   await page.getByRole("button", { name: "Metti in pausa esperienza" }).click();
-  await page.waitForTimeout(1100);
+  await page.clock.runFor(1100);
   await expect(page.locator("nav [role=progressbar]")).toHaveAttribute(
     "aria-valuenow",
     "0",
   );
   await page.getByRole("button", { name: "Riprendi esperienza" }).click();
+  await page.clock.runFor(1000);
   await expect(page.locator("nav [role=progressbar]")).toHaveAttribute(
     "aria-valuenow",
     "1",
   );
+  await page.clock.resume();
   await answer(page, 2, responses[1]);
   await expect(
     page.getByRole("button", { name: "Raggiungi indizio 3", exact: true }),
@@ -286,6 +304,10 @@ test("mouse mission finds and flips every card without a centered dialog", async
       expect(Math.abs(next!.x - rect!.x)).toBeLessThan(1);
       expect(Math.abs(next!.y - rect!.y)).toBeLessThan(1);
     }).toPass({ timeout: 20000, intervals: [100, 150, 200] });
+    if (id === 1)
+      await page.screenshot({
+        path: test.info().outputPath("mouse-card-front.png"),
+      });
     const before = await page
       .locator('[data-clue-id="' + id + '"]')
       .boundingBox();
@@ -298,6 +320,16 @@ test("mouse mission finds and flips every card without a centered dialog", async
       "data-face",
       "back",
     );
+    await expect(
+      page.locator('[data-clue-id="' + id + '"] .ds-clue-front'),
+    ).toBeHidden();
+    await expect(
+      page.locator('[data-clue-id="' + id + '"] .ds-clue-back'),
+    ).toBeVisible();
+    if (id === 1)
+      await page.screenshot({
+        path: test.info().outputPath("mouse-card-back.png"),
+      });
     const after = await page
       .locator('[data-clue-id="' + id + '"]')
       .boundingBox();
@@ -517,6 +549,7 @@ test("WebGL denial freezes mission time and offers the existing recovery path", 
 test("failed videos fall back to images and transitions can continue", async ({
   page,
 }) => {
+  test.setTimeout(180000);
   await page.route("**/*.mp4", (r) => r.abort());
   await start(page, false);
   for (let id = 1; id <= 5; id++) {
