@@ -590,11 +590,7 @@ test("short desktop and zoom equivalent allow tutorial, in-world answers and che
 }) => {
   await page.setViewportSize({ width: 720, height: 450 });
   await start(page);
-  await reach(page, 1);
-  await page.getByRole("button", { name: "Batsegnale", exact: true }).click();
-  await expect(
-    page.getByText("RISPOSTA CORRETTA", { exact: true }),
-  ).toBeVisible();
+  await answer(page, 1, responses[0]);
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
