@@ -138,7 +138,7 @@ export default function JokerCard({
           aria-labelledby={"riddle-" + id}
           aria-hidden={!active}
           inert={!active}
-          data-figma-node="64:1025"
+          data-figma-node="241:3394"
         >
           <div className="ds-card-back-art" aria-hidden="true">
             <span className="ds-card-art-top">
@@ -155,7 +155,7 @@ export default function JokerCard({
             {chosen && (
               <p
                 className={
-                  "ds-answer-label ds-caption " +
+                  "ds-answer-label ds-caption ds-bold " +
                   (correct ? "ds-answer-success" : "ds-answer-error")
                 }
                 role="status"

@@ -1,4 +1,6 @@
-# Applicazione del Design System — prima tranche
+# Applicazione del Design System — tranche storica
+
+Questa pagina documenta la versione precedente. Per i nodi e le regole del DS definitivo consulta [Design System ufficiale](DESIGN_SYSTEM.md).
 
 Fonte esclusiva: [Batman_DesignSystem, pagina design-system](https://www.figma.com/design/HNqMZbAGUnygNJu9kVJzOc/Batman_DesignSystem?node-id=0-1). Figma consultato in sola lettura. Branch `codex/figma-design-system`, base `4e12570e962c41c3f1ef4366cef3635bd5b46e87`.
 

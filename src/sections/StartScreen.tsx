@@ -3,11 +3,11 @@ export default function StartScreen({ onStart }: { onStart: () => void }) {
   return (
     <section
       className="ds-start"
-      data-figma-node="143:332"
+      data-figma-node="239:3262"
       aria-labelledby="start-title"
     >
       <div className="ds-start-stack">
-        <Logos />
+        <Logos plain />
         <div className="ds-start-title">
           <h1 id="start-title" className="ds-display ds-glow-text">
             BATMAN

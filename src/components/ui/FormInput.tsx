@@ -8,9 +8,9 @@ export default function FormInput({
   return (
     <div
       className={"ds-field" + (error ? " ds-field-error" : "")}
-      data-figma-node="75:1701"
+      data-figma-node="246:3963"
     >
-      <label className="ds-body-space" htmlFor={id}>
+      <label className="ds-body-space ds-bold ds-glow-text" htmlFor={id}>
         {label}
       </label>
       <div className="ds-field-control">

@@ -3,7 +3,9 @@ import {
   useRef,
   type ButtonHTMLAttributes,
   type CSSProperties,
+  type Ref,
 } from "react";
+import BatcaveBackdrop from "../cinematic/BatcaveBackdrop";
 export type Tone = "primary" | "secondary";
 export type IconName =
   | "chevron-left"
@@ -17,14 +19,18 @@ export function Button({
   size = "big",
   emphasis = false,
   className = "",
+  ref,
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & {
   tone?: Tone;
   size?: "big" | "medium" | "small";
   emphasis?: boolean;
+  ref?: Ref<HTMLButtonElement>;
 }) {
   return (
     <button
+      type="button"
+      ref={ref}
       {...props}
       className={[
         "ds-button",
@@ -54,9 +60,14 @@ export function IconButton({
   tone = "primary",
   className = "",
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { icon: IconName; tone?: Tone }) {
+}: ButtonHTMLAttributes<HTMLButtonElement> & {
+  icon: IconName;
+  tone?: Tone;
+  ref?: Ref<HTMLButtonElement>;
+}) {
   return (
     <button
+      type="button"
       {...props}
       className={"ds-icon-button ds-" + tone + " " + className}
     >
@@ -64,20 +75,17 @@ export function IconButton({
     </button>
   );
 }
-export function Logos() {
+export function Logos({ plain = false }: { plain?: boolean }) {
   return (
     <div
-      className="ds-logos"
-      aria-label="Sideshow per Batman"
-      data-figma-node="16:871"
+      className={"ds-logos" + (plain ? " ds-logos-plain" : " ds-glow-text")}
+      aria-label="Sideshow × Batman"
+      role="img"
+      data-figma-node={plain ? "267:1712" : "264:1679"}
     >
-      <span className="ds-sideshow">
-        <img src="/assets/ds/sideshow.svg" alt="Sideshow" />
-      </span>
-      <span className="ds-logo-x ds-heading">X</span>
-      <span className="ds-batman">
-        <img src="/assets/ds/batman.svg" alt="Batman" />
-      </span>
+      <img src="/assets/ds/sideshow.svg" alt="" />
+      <img src="/assets/ds/brand-x.svg" alt="" />
+      <img src="/assets/ds/batman.svg" alt="" />
     </div>
   );
 }
@@ -101,11 +109,11 @@ export function Timer({
       data-figma-node={
         small
           ? tone === "secondary"
-            ? "16:573"
-            : "16:572"
+            ? "239:3077"
+            : "239:3079"
           : tone === "secondary"
-            ? "16:574"
-            : "16:575"
+            ? "239:3078"
+            : "239:3080"
       }
     >
       <span className={small ? "ds-caption" : "ds-body-space"}>
@@ -120,12 +128,16 @@ export function Timer({
 export function MobileNotice() {
   return (
     <main className="ds-mobile-page">
+      <BatcaveBackdrop />
+      <header>
+        <Logos />
+      </header>
       <section
-        className="ds-mobile-card"
-        data-figma-node="114:325"
+        className="ds-panel ds-mobile-card"
+        data-figma-node="238:2970"
         aria-labelledby="mobile-title"
       >
-        <h1 id="mobile-title" className="ds-heading ds-glow-text">
+        <h1 id="mobile-title" className="ds-heading">
           DISPOSITIVO
           <br />
           NON COMPATIBILE

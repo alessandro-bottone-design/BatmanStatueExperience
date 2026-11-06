@@ -4,5 +4,8 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: { hmr: process.env.DISABLE_HMR !== "true" },
-  build: { minify: "esbuild" },
+  build: {
+    minify: "esbuild",
+    rolldownOptions: { input: { index: "index.html", notFound: "404.html" } },
+  },
 });

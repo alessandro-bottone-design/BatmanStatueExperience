@@ -6,16 +6,16 @@ export default function PauseOverlay() {
       .querySelector<HTMLButtonElement>(
         'button[aria-label="Riprendi esperienza"]',
       )
-      ?.focus();
-    return () => previous?.focus();
+      ?.focus({ preventScroll: true });
+    return () => previous?.focus({ preventScroll: true });
   }, []);
   return (
     <section
       className="ds-pause ds-centered"
       aria-labelledby="pause-title"
-      data-figma-node="155:331"
+      data-figma-node="239:3271"
     >
-      <h1 id="pause-title" className="ds-display ds-purple ds-glow-text">
+      <h1 id="pause-title" className="ds-display ds-purple">
         MISSIONE IN PAUSA
       </h1>
     </section>

@@ -4,6 +4,19 @@ import { Button } from "../ui/DesignSystem";
 const FRAMES = 800,
   CONCURRENCY = 6,
   CACHE_LIMIT = 48;
+const QUALITIES = [
+  ["241:3526", "PRESENZA LEGGENDARIA", "Non arredamento, una presenza"],
+  [
+    "252:2152",
+    "MATERIALI\nD’ELITE",
+    "Finitura da pezzo da museo,\nnon da scaffale",
+  ],
+  [
+    "252:2168",
+    "SCULTURA\nDI PRECISIONE",
+    "Ogni ombra di Gotham\nscolpita con ossessione.",
+  ],
+] as const;
 const source = (index: number) =>
   `/assets/showreel/${String(index).padStart(4, "0")}.webp`;
 export default function BatmanCamera({
@@ -151,6 +164,8 @@ export default function BatmanCamera({
     };
   }, [reduced, retry]);
   const final = reduced || progress > 0.91;
+  const [qualityNode, qualityTitle, qualityDescription] =
+    QUALITIES[Math.min(2, Math.floor(progress / 0.31))];
   return (
     <div
       ref={container}
@@ -180,29 +195,28 @@ export default function BatmanCamera({
             "ds-showreel-overlay " +
             (final ? "ds-showreel-final" : "ds-showreel-text")
           }
-          data-figma-node={final ? "49:497" : "49:496"}
+          data-figma-node={final ? "241:3527" : qualityNode}
         >
-          <h1 className={final ? "ds-display" : "ds-heading-l ds-glow-text"}>
-            {final ? (
-              "L’EREDITÀ È TUA"
-            ) : (
-              <>
-                PRESENZA
-                <br />
-                LEGGENDARIA
-              </>
-            )}
+          <h1
+            className={
+              (final ? "ds-display" : "ds-heading-l") + " ds-glow-text"
+            }
+          >
+            {final ? "L’EREDITÀ È TUA" : qualityTitle}
           </h1>
           {final ? (
-            <Button emphasis onClick={onPreorder}>
-              PREORDINA IL CAVALIERE
-            </Button>
+            <Button onClick={onPreorder}>PREORDINA IL CAVALIERE</Button>
           ) : (
-            <p className="ds-body">
-              Non arredamento,
-              <br />
-              una presenza.
-            </p>
+            <p className="ds-body">{qualityDescription}</p>
+          )}
+          {reduced && (
+            <ul className="sr-only">
+              {QUALITIES.map(([id, title, description]) => (
+                <li key={id}>
+                  {title}. {description}
+                </li>
+              ))}
+            </ul>
           )}
         </div>
         {!loaded && (

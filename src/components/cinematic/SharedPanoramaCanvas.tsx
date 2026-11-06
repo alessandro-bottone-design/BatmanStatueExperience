@@ -23,39 +23,39 @@ const BATCOMPUTER_RIDDLES = [
   {
     id: 1,
     riddle:
-      "“Non è un uomo, non è un \nmostro, non è un re... eppure\ntutta Gotham trattiene il fiato \nquando compare nel cielo notturno.”",
-    options: ["Joker", "Batsegnale", "Pinguino", "Arkham"],
-    correctAnswer: "Batsegnale",
+      "Non è un uomo, non è un mostro, non è un re... eppure tutta Gotham trattiene il fiato quando compare nel cielo notturno.",
+    options: ["JOKER", "BAT SEGNALE", "PINGUINO", "ARKHAM"],
+    correctAnswer: "BAT SEGNALE",
   },
   {
     id: 2,
     riddle:
-      "Porto un sorriso eterno, ma non ho mai conosciuto la gioia. Più rido… più Gotham brucia.",
-    options: ["Due Facce", "Robin", "Joker", "Enigmista"],
-    correctAnswer: "Joker",
+      "Porto un sorriso eterno, ma non ho mai conosciuto la gioia. Più rido... più Gotham brucia.",
+    options: ["ROBIN", "JOKER", "DUE FACCE", "ENIGMISTA"],
+    correctAnswer: "JOKER",
   },
 ];
 const ARMERIA_RIDDLE = {
   id: 3,
   riddle:
     "Non ho poteri sovrumani, eppure i criminali tremano al mio nome. Le tenebre sono il mio dominio.",
-  options: ["Superman", "Batman", "Bane", "Flash"],
-  correctAnswer: "Batman",
+  options: ["SUPERMAN", "BATMAN", "BANE", "FLASH"],
+  correctAnswer: "BATMAN",
 };
 const BATMOBILE_RIDDLES = [
   {
     id: 4,
     riddle:
-      "DIVORO L'ASFALTO DI GOTHAM A VELOCITÀ IMPOSSIBILI. LASCIO SOLO FUMO E TERRORE. COSA SONO?",
-    options: ["Batwing", "Batmobile", "Joker Van", "Treno di Gotham"],
-    correctAnswer: "Batmobile",
+      "Divoro l’asfalto di Gotham a velocità impossibili. Lascio solo fumo e terrore. Cosa sono?",
+    options: ["BATWING", "BATMOBILE", "JOKER VAN", "TRENO DI GOTHAM"],
+    correctAnswer: "BATMOBILE",
   },
   {
     id: 5,
     riddle:
-      "RUGGIO NELL’OSCURITÀ DI GOTHAM, IL CUORE PULSANTE DELLA MACCHINA DEL CAVALIERE. COSA SONO?",
-    options: ["Reattore", "Turbina", "Pistone"],
-    correctAnswer: "Reattore",
+      "Ruggio nell’oscurità di Gotham, il cuore pulsante della Bat Mobile, cosa sono?",
+    options: ["PISTONE", "REATTORE", "TURBINA"],
+    correctAnswer: "REATTORE",
   },
 ];
 

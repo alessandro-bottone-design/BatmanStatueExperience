@@ -1,91 +1,107 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, IconButton } from "./DesignSystem";
+
 const STEPS = [
   [
-    "ESPLORA L'AMBIENTE",
-    <>
-      Muovi il cursore
-      <br />
-      ai bordi dello schermo
-      <br />
-      per esplorare la BatCaverna a 360 gradi.
-    </>,
+    "307:4305",
+    "BATTI IL TEMPO",
+    "Hai a disposizione 3 Minuti.\nSe il timer scade la missione fallisce",
   ],
   [
-    "TROVA GLI INDIZI",
-    <>
-      Cerca cinque carte del Joker:
-      <br />
-      due al Batcomputer, una nell’Armeria
-      <br />e due vicino alla Batmobile.
-    </>,
-  ],
-  [
+    "307:4304",
     "RISOLVI GLI ENIGMI",
-    <>
-      Clicca una carta per girarla
-      <br />e scegli la risposta corretta.
-      <br />
-      Puoi usare anche Tab e Invio.
-    </>,
+    "Rispondi correttamente alle domande\nposte dal Joker per procedere",
   ],
   [
-    "CONTROLLA IL TEMPO",
-    <>
-      Hai tre minuti per disinnescare la bomba.
-      <br />
-      Esc mette in pausa l’esplorazione
-      <br />o richiude la carta aperta.
-    </>,
+    "307:4303",
+    "TROVA TUTTI GLI INDIZI",
+    "Individua tutte le Joker Cards\nnascoste nell’oscurità",
+  ],
+  [
+    "307:4302",
+    "ESPLORA L’AMBIENTE",
+    "Muovi il cursore\nai bordi dello schermo\nper esplorare la BatCaverna a 360 gradi.",
   ],
 ] as const;
+
 export default function BatcomputerBootOverlay({
   onComplete,
 }: {
   onComplete: () => void;
 }) {
   const [step, setStep] = useState(0);
+  const last = step === STEPS.length - 1;
+  const start = useRef<HTMLButtonElement>(null);
+  const next = useRef<HTMLButtonElement>(null);
+  const transferFocus = useRef(false);
+  useEffect(() => {
+    if (!transferFocus.current) return;
+    (last ? start.current : next.current)?.focus();
+    transferFocus.current = false;
+  }, [last, step]);
+  const [node, title, description] = STEPS[step];
+
   return (
     <section
       className="ds-tutorial ds-centered"
-      data-figma-node="54:461"
+      data-figma-node="243:3639"
       aria-labelledby="tutorial-title"
     >
-      <h1 id="tutorial-title" className="ds-display ds-purple ds-glow-text">
-        ALLARME ALLA
-        <br />
-        BATCAVERNA
-      </h1>
-      <p className="ds-body">
-        Joker ha attivato una bomba nella BatCaverna.
-        <br />
-        Individua tutti e 5 gli indizi e neutralizza la minaccia
-        <br />
-        prima dello scadere del tempo.
-      </p>
-      <div className="ds-tutorial-card" data-figma-node="54:433">
-        <h2 className="ds-body-space ds-purple" aria-live="polite">
-          {STEPS[step][0]}
-        </h2>
-        <p className="ds-body">{STEPS[step][1]}</p>
+      <div
+        className="ds-panel ds-secondary ds-tutorial-intro"
+        data-figma-node="243:3612"
+      >
+        <h1 id="tutorial-title" className="ds-display">
+          ALLARME ALLA
+          <br />
+          BATCAVERNA
+        </h1>
+        <p className="ds-body">
+          Joker ha attivato una bomba nella BatCaverna.
+          <br />
+          Individua tutti e 5 gli indizi e neutralizza la minaccia
+          <br />
+          prima dello scadere del tempo.
+        </p>
+      </div>
+      <div
+        className="ds-panel ds-secondary ds-tutorial-card"
+        data-figma-node={node}
+      >
+        <div className="ds-tutorial-copy" aria-live="polite" aria-atomic="true">
+          <h2 className="ds-body-space ds-glow-text">{title}</h2>
+          <p className="ds-body">{description}</p>
+        </div>
         <div className="ds-tutorial-actions">
           <IconButton
             tone="secondary"
             icon="chevron-left"
             aria-label="Istruzione precedente"
             disabled={step === 0}
-            onClick={() => setStep(step - 1)}
+            onClick={(event) => {
+              transferFocus.current =
+                step === 1 && document.activeElement === event.currentTarget;
+              setStep(step - 1);
+            }}
           />
-          <IconButton
-            tone="secondary"
-            icon="chevron-right"
-            aria-label="Istruzione successiva"
-            disabled={step === STEPS.length - 1}
-            onClick={() => setStep(step + 1)}
-          />
-          <Button tone="secondary" onClick={onComplete}>
-            INIZIA LA MISSIONE
-          </Button>
+          {last ? (
+            <Button ref={start} tone="secondary" onClick={onComplete}>
+              INIZIA LA MISSIONE
+            </Button>
+          ) : (
+            <IconButton
+              tone="secondary"
+              icon="chevron-right"
+              ref={next}
+              aria-label="Istruzione successiva"
+              onClick={(event) => {
+                transferFocus.current =
+                  step === STEPS.length - 2 &&
+                  document.activeElement === event.currentTarget;
+                setStep(step + 1);
+              }}
+            />
+          )}
         </div>
       </div>
     </section>
