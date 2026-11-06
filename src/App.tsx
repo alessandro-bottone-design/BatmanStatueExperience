@@ -142,7 +142,12 @@ function Experience() {
   const togglePause = () => setPaused((previous) => !previous);
   useEffect(() => {
     const key = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && !event.defaultPrevented && canPause) {
+      if (
+        event.key === "Escape" &&
+        !event.repeat &&
+        !event.defaultPrevented &&
+        canPause
+      ) {
         setPaused((previous) => !previous);
       }
     };

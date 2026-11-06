@@ -79,7 +79,7 @@ export default function JokerCard({
   useEffect(() => {
     if (!active) return;
     const escape = (event: KeyboardEvent) => {
-      if (event.key !== "Escape" || disabled) return;
+      if (event.key !== "Escape" || event.repeat || disabled) return;
       event.preventDefault();
       event.stopImmediatePropagation();
       if (!correct) onClose();

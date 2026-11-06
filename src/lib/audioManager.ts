@@ -178,5 +178,7 @@ export const BatcavernAudio = {
     laughBuffer = null;
     context = null;
     master = null;
+    muted = false;
+    paused = false;
   },
 };

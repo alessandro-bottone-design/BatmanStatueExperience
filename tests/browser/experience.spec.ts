@@ -1,4 +1,4 @@
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Page, type Request } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 test.beforeEach(async ({ page }) => {
   await page.route("https://vercel.live/**", (route) => route.abort());
@@ -80,6 +80,40 @@ const CARD = {
   cardExpiry: "12/30",
   cardCvv: "123",
 };
+function observeCheckoutRequests(page: Page) {
+  const requests: Request[] = [];
+  page.on("request", (request) => requests.push(request));
+  return requests;
+}
+async function expectLocalCheckout(page: Page, requests: Request[]) {
+  const fieldNames = Object.keys({ ...PERSONAL, ...SHIPPING, ...CARD });
+  const sampleValues = [
+    PERSONAL.fullName,
+    PERSONAL.email,
+    PERSONAL.password,
+    SHIPPING.address,
+    CARD.cardNumber,
+    CARD.cardNumber.replaceAll(" ", ""),
+  ];
+  const outgoingData = requests
+    .filter((request) => {
+      const url = new URL(request.url());
+      if (url.origin === "https://vercel.live") return false;
+      const address = decodeURIComponent(url.href.replaceAll("+", " "));
+      return (
+        !["GET", "HEAD"].includes(request.method()) ||
+        request.postData() !== null ||
+        fieldNames.some((name) => url.searchParams.has(name)) ||
+        sampleValues.some((value) => address.includes(value))
+      );
+    })
+    .map((request) => request.url());
+  expect(outgoingData).toEqual([]);
+  expect(new URL(page.url()).search).toBe("");
+  expect(
+    await page.evaluate(() => [localStorage.length, sessionStorage.length]),
+  ).toEqual([0, 0]);
+}
 async function fill(page: Page, card = false) {
   const next = page.getByRole("button", { name: "Tappa successiva" });
   await fillFields(page, PERSONAL);
@@ -257,17 +291,25 @@ test("keyboard mission flips in-world cards, supports wrong answers and escape, 
   await expect(
     page.getByText("RISPOSTA ERRATA", { exact: true }),
   ).toBeVisible();
-  await page.keyboard.press("Escape");
+  await page.keyboard.down("Escape");
   await expect(page.locator('[data-clue-id="1"]')).toHaveAttribute(
     "data-face",
     "front",
   );
-  await expect(
-    page.getByRole("heading", { name: "MISSIONE IN PAUSA" }),
-  ).toHaveCount(0);
+  const pause = page.getByRole("heading", { name: "MISSIONE IN PAUSA" });
+  await page.keyboard.down("Escape");
+  await expect(pause).toHaveCount(0);
+  await page.keyboard.up("Escape");
   await expect(
     page.getByRole("button", { name: "Apri indizio 1", exact: true }),
   ).toBeFocused();
+  await page.keyboard.down("Escape");
+  await expect(pause).toBeVisible();
+  await page.keyboard.down("Escape");
+  await expect(pause).toBeVisible();
+  await page.keyboard.up("Escape");
+  await page.keyboard.press("Escape");
+  await expect(pause).toHaveCount(0);
   for (let id = 1; id <= 5; id++) await answer(page, id, responses[id - 1]);
   await expect(
     page.getByRole("heading", { name: "MISSIONE COMPIUTA" }),
@@ -472,11 +514,7 @@ test("checkout validates each Figma step, keeps entered values and displays the 
 test("valid PayPal demo creates only a local guarded confirmation", async ({
   page,
 }) => {
-  const posts: string[] = [];
-  page.on("request", (r) => {
-    if (r.method() === "POST" && !r.url().startsWith("https://vercel.live/"))
-      posts.push(r.url());
-  });
+  const requests = observeCheckoutRequests(page);
   await page.goto("/#checkout");
   await fill(page);
   await page.getByRole("button", { name: "CHECKOUT", exact: true }).click();
@@ -488,16 +526,14 @@ test("valid PayPal demo creates only a local guarded confirmation", async ({
     "src",
     BATCOMPUTER_VIDEO,
   );
-  expect(posts).toEqual([]);
-  expect(
-    await page.evaluate(() => [localStorage.length, sessionStorage.length]),
-  ).toEqual([0, 0]);
+  await expectLocalCheckout(page, requests);
   await page.reload();
   await expect(page).toHaveURL(/#statua$/);
 });
 test("card demo prevents duplicate submissions and never sends form data", async ({
   page,
 }) => {
+  const requests = observeCheckoutRequests(page);
   await page.goto("/#checkout");
   await fill(page, true);
   const history = await page.evaluate(() => window.history.length);
@@ -513,6 +549,7 @@ test("card demo prevents duplicate submissions and never sends form data", async
     page.getByRole("heading", { name: "ACQUISTO ANDATO A BUON FINE" }),
   ).toBeVisible();
   expect(await page.evaluate(() => window.history.length)).toBe(history + 1);
+  await expectLocalCheckout(page, requests);
   await page.getByRole("button", { name: "TORNA ALLA HOME" }).click();
   await expect(
     page.getByRole("heading", { name: "BATMAN STATUE EXPERIENCE" }),
@@ -827,4 +864,40 @@ test("mute affects existing sources and blocks answer beeps", async ({
       () => (window as unknown as { __beeps: number }).__beeps,
     ),
   ).toBe(counts);
+});
+test("audio starts after returning to desktop from touch mode", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const matchMedia = window.matchMedia.bind(window);
+    const media = "(pointer: coarse)";
+    const pointer = new EventTarget() as MediaQueryList;
+    let coarse = false;
+    Object.defineProperties(pointer, {
+      media: { value: media },
+      matches: { get: () => coarse },
+    });
+    window.matchMedia = (query) => (query === media ? pointer : matchMedia(query));
+    window.addEventListener("test:pointer-mode", (event) => {
+      coarse = (event as CustomEvent<boolean>).detail;
+      pointer.dispatchEvent(new Event("change"));
+    });
+  });
+  const setCoarsePointer = (detail: boolean) =>
+    page.evaluate((mode) => {
+      window.dispatchEvent(new CustomEvent("test:pointer-mode", { detail: mode }));
+    }, detail);
+
+  await page.goto("/");
+  await page.getByRole("button", { name: "Silenzia audio" }).click();
+  await setCoarsePointer(true);
+  await expect(
+    page.getByRole("heading", { name: "DISPOSITIVO NON COMPATIBILE" }),
+  ).toBeVisible();
+  await setCoarsePointer(false);
+  await expect(page.getByRole("button", { name: "Silenzia audio" })).toBeVisible();
+
+  const music = page.waitForRequest("**/assets/audio/SiglaBatman.wav");
+  await page.getByRole("button", { name: "INIZIA LA MISSIONE", exact: true }).click();
+  await music;
 });
