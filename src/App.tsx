@@ -25,15 +25,15 @@ import {
 } from "./lib/experience";
 import { BatcavernAudio } from "./lib/audioManager";
 import ErrorBoundary from "./components/ui/ErrorBoundary";
+import Statue from "./features/showreel/BatmanCamera";
+import Checkout from "./features/checkout/Checkout";
+import Confirmation from "./features/checkout/ThankYouPage";
 const Panorama = lazy(
   () => import("./features/mission/SharedPanoramaCanvas"),
 );
 const Transition = lazy(
   () => import("./features/mission/CinematicVideoPlayer"),
 );
-const Statue = lazy(() => import("./features/showreel/BatmanCamera"));
-const Checkout = lazy(() => import("./features/checkout/Checkout"));
-const Confirmation = lazy(() => import("./features/checkout/ThankYouPage"));
 const JokerAudio = lazy(() => import("./features/mission/JokerAudioManager"));
 export default function App() {
   const desktop = useDesktop();
@@ -225,6 +225,7 @@ function Experience() {
           <Suspense
             fallback={
               <div className="loading-screen legacy-pending" role="status">
+                <h1 className="sr-only">Inizializzazione della Batcaverna</h1>
                 Inizializzazione della Batcaverna…
               </div>
             }

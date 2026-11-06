@@ -1,6 +1,17 @@
 # Changelog
 
-## 2026-11-06 (v2.1.0) — Riorganizzazione architetturale definitiva, proiezione sferica 3D chiusa Batcave e Favicon Figma ufficiale
+## 2026-11-06 (v2.1.1) — Risoluzione rendering panoramico 3D istantaneo, culling facce interne e stabilità di navigazione
+
+- **Ottimizzazione rendering Three.js su BatcaveBackdrop**:
+  - Risolto il problema delle schermate nere su produzione causato dal face-culling combinato (`scale(-1, 1, 1)` con `BackSide`): applicato `THREE.DoubleSide` e orientamento polare sincronizzato a `SharedPanoramaCanvas` (`rotation.y = -Math.PI / 2`).
+  - Precaricamento istantaneo della texture statica `.jpg` ad alta risoluzione al montaggio, garantendo che l'ambiente 3D della Batcaverna sia visibile fin dal frame zero senza alcuna attesa del buffering video.
+  - Transizione fluida alla `VideoTexture` non appena il video inizia il playback con avvio controllato e recupero trasparente in caso di blocco autoplay.
+  - Svincolo del loop di animazione continuo quando il video non è attivo, riducendo a zero il carico GPU e l'occupazione del main thread.
+- **Stabilità CSS stacking context**:
+  - Impostato `background: transparent;` su `.experience-shell:has(> .batcave-backdrop)` e posizionamento controllato del backdrop a `z-index: 0` con `#experience-content` a `z-index: 10`, prevenendo qualsiasi sovrascrittura di colore opaco da parte del contenitore.
+- **Accessibilità e navigazione hash sincrona**:
+  - Integrazione diretta delle sezioni `Statue`, `Checkout` e `Confirmation` per garantire il rendering istantaneo privo di ritardi di caricamento, con salvaguardia del livello di intestazione `<h1>` nei fallback Suspense.
+  - Superamento del 100% dei test Playwright e verifiche di accessibilità Axe su Chromium.
 
 - **Riorganizzazione e pulizia architettura (`src/`)**:
   - Eliminazione definitiva di tutte le cartelle fantasma e i file wrapper re-export non necessari: rimosse `src/sections/`, `src/components/cinematic/`, `src/components/joker/`, `src/features/introduzione/`, `src/features/missione/`, `src/components/shared/` e cartelle vuote residue.

@@ -15,16 +15,15 @@ export default function BatcaveBackdrop() {
   useEffect(() => {
     if (!isDesktop) return;
     const canvas = canvasRef.current;
-    const video = videoRef.current;
     if (!canvas) return;
 
     let renderer: THREE.WebGLRenderer | null = null;
     let scene: THREE.Scene | null = null;
     let camera: THREE.PerspectiveCamera | null = null;
-    let texture: THREE.Texture | null = null;
     let animId: number | null = null;
-    let frameCallbackId: number | null = null;
     let alive = true;
+    let videoTexture: THREE.VideoTexture | null = null;
+    let staticTexture: THREE.Texture | null = null;
 
     try {
       renderer = new THREE.WebGLRenderer({
@@ -45,14 +44,14 @@ export default function BatcaveBackdrop() {
       );
       camera.position.set(0, 0, 0.1);
 
-      const geometry = new THREE.SphereGeometry(500, 60, 40);
-      geometry.scale(-1, 1, 1);
-
+      const geometry = new THREE.SphereGeometry(500, 64, 40);
       const material = new THREE.MeshBasicMaterial({
-        side: THREE.BackSide,
+        side: THREE.DoubleSide,
       });
 
       const mesh = new THREE.Mesh(geometry, material);
+      mesh.scale.set(-1, 1, 1);
+      mesh.rotation.set(0, -Math.PI / 2, 0);
       scene.add(mesh);
 
       const renderScene = () => {
@@ -60,20 +59,39 @@ export default function BatcaveBackdrop() {
         renderer.render(scene, camera);
       };
 
-      if (!reduced && video && !failed) {
-        const videoTex = new THREE.VideoTexture(video);
-        videoTex.colorSpace = THREE.SRGBColorSpace;
-        videoTex.minFilter = THREE.LinearFilter;
-        videoTex.magFilter = THREE.LinearFilter;
-        videoTex.generateMipmaps = false;
-        texture = videoTex;
-        material.map = videoTex;
-        material.needsUpdate = true;
+      // 1. Carica immediatamente la texture statica per eliminare qualsiasi schermata nera
+      const loader = new THREE.TextureLoader();
+      loader.load(
+        BATCOMPUTER + ".jpg",
+        (tex) => {
+          if (!alive) {
+            tex.dispose();
+            return;
+          }
+          tex.colorSpace = THREE.SRGBColorSpace;
+          tex.minFilter = THREE.LinearFilter;
+          tex.magFilter = THREE.LinearFilter;
+          staticTexture = tex;
+          if (!videoTexture) {
+            material.map = tex;
+            material.needsUpdate = true;
+            renderScene();
+          }
+        },
+        undefined,
+        () => {
+          if (alive && !videoRef.current) setFailed(true);
+        },
+      );
 
+      // 2. Loop di rendering attivo solo durante il playback del video
+      let frameCallbackId: number | null = null;
+      const startVideoLoop = () => {
+        if (!alive) return;
         const loop = () => {
           if (!alive) return;
           renderScene();
-          if ("requestVideoFrameCallback" in video) {
+          if (video && "requestVideoFrameCallback" in video) {
             frameCallbackId = (
               video as HTMLVideoElement & {
                 requestVideoFrameCallback: (cb: () => void) => number;
@@ -83,36 +101,34 @@ export default function BatcaveBackdrop() {
             animId = requestAnimationFrame(loop);
           }
         };
+        loop();
+      };
 
-        if (video.readyState >= 2) {
-          loop();
+      // 3. Se consentito da prefers-reduced-motion, collega il video e passa alla VideoTexture
+      const video = videoRef.current;
+      if (!reduced && video && !failed) {
+        const onPlaying = () => {
+          if (!alive || !mesh) return;
+          if (!videoTexture) {
+            videoTexture = new THREE.VideoTexture(video);
+            videoTexture.colorSpace = THREE.SRGBColorSpace;
+            videoTexture.minFilter = THREE.LinearFilter;
+            videoTexture.magFilter = THREE.LinearFilter;
+            videoTexture.generateMipmaps = false;
+          }
+          material.map = videoTexture;
+          material.needsUpdate = true;
+          startVideoLoop();
+        };
+
+        video.addEventListener("playing", onPlaying);
+        if (video.readyState >= 2 && !video.paused) {
+          onPlaying();
         } else {
-          video.oncanplay = () => {
-            if (alive) loop();
-          };
+          void video.play().catch(() => {
+            // Autoplay bloccato dal browser: rimane visibile la texture statica 3D
+          });
         }
-      } else {
-        const loader = new THREE.TextureLoader();
-        loader.load(
-          BATCOMPUTER + ".jpg",
-          (tex) => {
-            if (!alive) {
-              tex.dispose();
-              return;
-            }
-            tex.colorSpace = THREE.SRGBColorSpace;
-            tex.minFilter = THREE.LinearFilter;
-            tex.magFilter = THREE.LinearFilter;
-            texture = tex;
-            material.map = tex;
-            material.needsUpdate = true;
-            renderScene();
-          },
-          undefined,
-          () => {
-            if (alive) setFailed(true);
-          },
-        );
       }
 
       const onResize = () => {
@@ -140,7 +156,8 @@ export default function BatcaveBackdrop() {
             }
           ).cancelVideoFrameCallback(frameCallbackId);
         }
-        if (texture) texture.dispose();
+        if (videoTexture) videoTexture.dispose();
+        if (staticTexture) staticTexture.dispose();
         geometry.dispose();
         material.dispose();
         renderer?.dispose();
