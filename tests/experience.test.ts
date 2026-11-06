@@ -5,7 +5,11 @@ import {
   initialExperience as initial,
   phaseFromHash,
 } from "../src/lib/experience";
-import { EMPTY_FORM, orderTotal, validateCheckout } from "../src/lib/checkout";
+import {
+  EMPTY_FORM,
+  orderTotal,
+  validateCheckout,
+} from "../src/features/checkout/checkoutModel";
 const story = () => reduce(initial, { type: "storytelling" });
 const mission = () =>
   reduce(reduce(story(), { type: "tutorial" }), { type: "start" });

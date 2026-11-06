@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   build: {
-    outDir: "/tmp/batman87-figma-ds-fixture",
+    outDir: fileURLToPath(new URL("../../artifacts/fixtures/ds", import.meta.url)),
     emptyOutDir: true,
     minify: "esbuild",
     rolldownOptions: {

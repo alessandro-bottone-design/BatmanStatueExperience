@@ -11,10 +11,10 @@ import { MotionConfig, useReducedMotion } from "motion/react";
 import PauseOverlay from "./components/ui/PauseOverlay";
 import BatcaveBackdrop from "./components/cinematic/BatcaveBackdrop";
 import Navbar, { type NavPhase } from "./components/layout/Navbar";
-import IntroScreen from "./sections/IntroScreen";
-import StartScreen from "./sections/StartScreen";
-import BatcomputerBootOverlay from "./components/ui/BatcomputerBootOverlay";
-import MissionResult from "./sections/MissionResult";
+import IntroScreen from "./features/intro/IntroScreen";
+import StartScreen from "./features/intro/StartScreen";
+import BatcomputerBootOverlay from "./features/intro/BatcomputerBootOverlay";
+import MissionResult from "./features/mission/MissionResult";
 import { Cursor, MobileNotice } from "./components/ui/DesignSystem";
 import { useDesktop } from "./hooks/useDesktop";
 import { useMissionTimer } from "./hooks/useMissionTimer";
@@ -26,15 +26,15 @@ import {
 import { BatcavernAudio } from "./lib/audioManager";
 import ErrorBoundary from "./components/ui/ErrorBoundary";
 const Panorama = lazy(
-  () => import("./components/cinematic/SharedPanoramaCanvas"),
+  () => import("./features/mission/SharedPanoramaCanvas"),
 );
 const Transition = lazy(
-  () => import("./components/cinematic/CinematicVideoPlayer"),
+  () => import("./features/mission/CinematicVideoPlayer"),
 );
-const Statue = lazy(() => import("./components/cinematic/BatmanCamera"));
-const Checkout = lazy(() => import("./sections/Checkout"));
-const Confirmation = lazy(() => import("./sections/ThankYouPage"));
-const JokerAudio = lazy(() => import("./components/joker/JokerAudioManager"));
+const Statue = lazy(() => import("./features/showreel/BatmanCamera"));
+const Checkout = lazy(() => import("./features/checkout/Checkout"));
+const Confirmation = lazy(() => import("./features/checkout/ThankYouPage"));
+const JokerAudio = lazy(() => import("./features/mission/JokerAudioManager"));
 export default function App() {
   const desktop = useDesktop();
   return desktop ? (

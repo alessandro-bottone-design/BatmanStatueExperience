@@ -5,7 +5,11 @@ export default defineConfig({
   expect: { timeout: 15000 },
   fullyParallel: false,
   workers: process.env.CI ? 1 : 2,
-  reporter: [["list"], ["html", { open: "never" }]],
+  reporter: [
+    ["list"],
+    ["html", { open: "never", outputFolder: "artifacts/playwright-report" }],
+  ],
+  outputDir: "artifacts/test-results",
   use: {
     baseURL: process.env.BASE_URL || "http://127.0.0.1:4173",
     viewport: { width: 1440, height: 900 },

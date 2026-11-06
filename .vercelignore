@@ -5,6 +5,7 @@ dist
 .agents
 playwright-report
 test-results
+artifacts
 tests
 docs
 scripts
