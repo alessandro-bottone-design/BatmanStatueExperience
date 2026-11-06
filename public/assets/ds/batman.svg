@@ -1,31 +1,5 @@
-<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="255" height="194" viewBox="0 0 255 194" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="Frame 362">
-<g id="Vector" filter="url(#filter0_ddd_0_22)">
-<path d="M190.991 81.1244C185.367 79.5676 180.492 77.928 175.133 77.9556C167.222 77.9925 162.174 84.0628 162.266 92.6387C154.264 86.5315 145.109 86.7986 138.625 94.002C133.568 99.6209 130.458 106.253 127.569 114C124.633 105.968 121.624 98.9485 116.128 93.4308C109.424 86.7065 100.252 87.2592 92.8075 93.3203C92.4234 86.7065 89.8079 80.5717 83.8452 78.9505C77.0411 77.1082 70.7492 79.5584 64 82.7179C70.0542 64.1753 86.6894 51.9978 104.769 48C102.401 53.1768 101.367 58.4734 104.925 62.2777C108.748 66.3492 114.71 67.4177 120.545 67.4361L122.273 54.6875L124.651 59.9012C125.173 61.0526 128.913 61.0618 129.864 60.546L132.15 54.448L134.757 67.7033C139.97 68.0994 146.975 67.4546 150.862 62.987C154.474 58.8327 152.974 53.3058 150.24 48.0829C168.43 50.4318 182.76 63.4568 191 81.1244H190.991Z" fill="#FFD700"/>
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="198" height="146" viewBox="0 0 198 146" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="logo-batman">
+<path id="Vector" d="M162.491 73.1244C156.867 71.5676 151.992 69.928 146.633 69.9556C138.722 69.9925 133.674 76.0628 133.766 84.6387C125.764 78.5315 116.609 78.7986 110.125 86.002C105.068 91.6209 101.958 98.2532 99.0686 106C96.133 97.9676 93.1242 90.9485 87.6279 85.4308C80.9244 78.7065 71.7517 79.2592 64.3075 85.3203C63.9234 78.7065 61.3079 72.5717 55.3452 70.9505C48.5411 69.1082 42.2492 71.5584 35.5 74.7179C41.5542 56.1753 58.1894 43.9978 76.2695 40C73.9009 45.1768 72.8675 50.4734 76.425 54.2777C80.2477 58.3492 86.2104 59.4177 92.045 59.4361L93.7735 46.6875L96.1513 51.9012C96.6725 53.0526 100.413 53.0618 101.364 52.546L103.65 46.448L106.257 59.7033C111.47 60.0994 118.475 59.4546 122.362 54.987C125.974 50.8327 124.474 45.3058 121.74 40.0829C139.93 42.4318 154.26 55.4568 162.5 73.1244H162.491Z" fill="#FFD700"/>
 </g>
-</g>
-<defs>
-<filter id="filter0_ddd_0_22" x="0" y="0" width="255" height="194" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
-<feFlood flood-opacity="0" result="BackgroundImageFix"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dy="2"/>
-<feGaussianBlur stdDeviation="4"/>
-<feComposite in2="hardAlpha" operator="out"/>
-<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 0.843137 0 0 0 0 0 0 0 0 0.6 0"/>
-<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_22"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dy="8"/>
-<feGaussianBlur stdDeviation="16"/>
-<feComposite in2="hardAlpha" operator="out"/>
-<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 0.843137 0 0 0 0 0 0 0 0 0.3 0"/>
-<feBlend mode="normal" in2="effect1_dropShadow_0_22" result="effect2_dropShadow_0_22"/>
-<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-<feOffset dy="16"/>
-<feGaussianBlur stdDeviation="32"/>
-<feComposite in2="hardAlpha" operator="out"/>
-<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 0.843137 0 0 0 0 0 0 0 0 0.15 0"/>
-<feBlend mode="normal" in2="effect2_dropShadow_0_22" result="effect3_dropShadow_0_22"/>
-<feBlend mode="normal" in="SourceGraphic" in2="effect3_dropShadow_0_22" result="shape"/>
-</filter>
-</defs>
 </svg>

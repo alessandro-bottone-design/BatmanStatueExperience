@@ -21,12 +21,22 @@
   },
   {
     "file": "public/assets/ds/batman.svg",
-    "bytes": 2549,
-    "sha256": "d6e9a20142857dac2109684a2f330ac912f3fdeaeb4b07c89529417e910ae1f7",
+    "bytes": 1025,
+    "sha256": "892fcd6e372c355c5ee5694b60c09f09e0b5e3456066e289b29bcaa237e879d9",
     "native": {
-      "width": "255",
-      "height": "194",
-      "viewBox": "0 0 255 194"
+      "width": "198",
+      "height": "146",
+      "viewBox": "0 0 198 146"
+    }
+  },
+  {
+    "file": "public/assets/ds/brand-x.svg",
+    "bytes": 345,
+    "sha256": "1e7b4f25b2922c3bd8cad03b4375702c1b8f912f80ff66369ffcc0c7243898ef",
+    "native": {
+      "width": "98",
+      "height": "101",
+      "viewBox": "0 0 98 101"
     }
   },
   {
@@ -90,6 +100,46 @@
     }
   },
   {
+    "file": "public/assets/ds/progress-1.svg",
+    "bytes": 250,
+    "sha256": "74b8dcb9a5adb0534982485df1191aad25b26d1f4806ccd65154fc69472745ba",
+    "native": {
+      "width": "19.2",
+      "height": "12",
+      "viewBox": "0 0 19.2 12"
+    }
+  },
+  {
+    "file": "public/assets/ds/progress-2.svg",
+    "bytes": 250,
+    "sha256": "79ad35c34b890ba78241486c1fc014fb112abf53b178d66a274803a35bb31d30",
+    "native": {
+      "width": "38.4",
+      "height": "12",
+      "viewBox": "0 0 38.4 12"
+    }
+  },
+  {
+    "file": "public/assets/ds/progress-3.svg",
+    "bytes": 250,
+    "sha256": "decc81e3f5fa43cdb36a7925dbf19666400add8e5719c767b1e8734be6ee38d0",
+    "native": {
+      "width": "57.6",
+      "height": "12",
+      "viewBox": "0 0 57.6 12"
+    }
+  },
+  {
+    "file": "public/assets/ds/progress-4.svg",
+    "bytes": 250,
+    "sha256": "43d846fdf556b7c812c938adedec07f002026d766fd438c0b52fb32216369663",
+    "native": {
+      "width": "76.8",
+      "height": "12",
+      "viewBox": "0 0 76.8 12"
+    }
+  },
+  {
     "file": "public/assets/ds/progress-empty.svg",
     "bytes": 243,
     "sha256": "082d2771c99600a48f3eb7019c58e77f4b2342cfabd02e9c631b1225b23180bc",
@@ -111,12 +161,12 @@
   },
   {
     "file": "public/assets/ds/sideshow.svg",
-    "bytes": 5863,
-    "sha256": "ce8fac9f66fe3762c65787310a6e709d43d90cfdd180229aceab4c7183232df2",
+    "bytes": 4330,
+    "sha256": "f60affe520b5d68bac321d6413e9d279e8473d5a21d73d257adee3aa52d76ba9",
     "native": {
-      "width": "307.683",
-      "height": "193.151",
-      "viewBox": "0 0 307.683 193.151"
+      "width": "259.683",
+      "height": "145.151",
+      "viewBox": "0 0 259.683 145.151"
     }
   }
 ]

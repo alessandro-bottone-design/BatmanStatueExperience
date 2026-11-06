@@ -1,73 +1,106 @@
-# Batman 87th Anniversary
+# Batman 87th Anniversary Statue Experience
 
-Esperienza accademica desktop di Alessandro Bottone: esplorazione della Batcaverna, cinque enigmi del Joker e presentazione cinematica di una statua da collezione. **Non è un negozio:** il checkout è una simulazione locale; usare soltanto dati fittizi.
+Esperienza multimediale e interattiva per desktop ideata e progettata da Alessandro Bottone. L'applicazione celebra l'87º anniversario di Batman attraverso un'esplorazione investigativa a 360° della Batcaverna con cinque enigmi del Joker, la presentazione cinematica della statua da collezione Sideshow a 800 frame e un checkout dimostrativo accessibile.
 
-## Avvio riproducibile
+> **Avviso accademico**: il sito è un progetto di design UI/UX e non costituisce un negozio reale. La procedura di preordine e il checkout sono simulazioni locali: utilizzare esclusivamente dati fittizi.
 
-Richiede Node.js 22.12+ oppure 24 e npm. Vercel usa Node 24.
+- **Repository GitHub**: [https://github.com/alessandro-bottone-design/BatmanStatueExperience](https://github.com/alessandro-bottone-design/BatmanStatueExperience)
+- **Sito web pubblico**: [https://batman-87th-anniversary.vercel.app/](https://batman-87th-anniversary.vercel.app/)
 
-```sh
+---
+
+## Avvio locale
+
+### Prerequisiti
+- **Node.js**: versione 22.12+ o 24 LTS (l'ambiente di hosting Vercel e la CI GitHub Actions adottano Node 24).
+- **npm**: versione inclusa con Node.js.
+
+### Installazione e avvio del server di sviluppo
+
+```bash
+# Installazione pulita e deterministica delle dipendenze
 npm ci
+
+# Avvio del server di sviluppo locale su http://127.0.0.1:3000
 npm run dev
 ```
 
-Per controllare la build pubblicabile:
+### Build e anteprima di produzione
 
-```sh
-npm run check
+```bash
+# Compilazione dei sorgenti e generazione del pacchetto di produzione
+npm run build
+
+# Anteprima locale della build di produzione su http://127.0.0.1:4173
 npm run preview
 ```
 
-Aprire l’URL HTTP mostrato dal comando. `file://` non è supportato: Vite produce moduli e chunk. Gli script usano percorsi relativi espliciti per funzionare anche quando la directory del progetto contiene `:`.
+> **Nota**: non aprire `dist/index.html` tramite protocollo `file://`. La build utilizza moduli ES e caricamenti dinamici asincroni che richiedono un server HTTP.
 
-## Verifiche
+### Verifiche di qualità e test
 
-```sh
-npm run typecheck
-npm run lint
-npm test
+```bash
+# Controllo rapido: typecheck TypeScript, lint ESLint, test unitari e build
+npm run check
+
+# Installazione dei browser Playwright (Chromium, Firefox, WebKit)
 ./node_modules/.bin/playwright install chromium firefox webkit
+
+# Compilazione della fixture del Design System e suite end-to-end
 npm run build:ds-fixture
 npm run test:e2e
-npm audit
 ```
 
-Playwright verifica Chromium, Firefox e WebKit; salva screenshot/tracce dei fallimenti in `test-results` e report HTML in `playwright-report`. Per una preview ospitata: `BASE_URL=https://deployment.vercel.app npm run test:e2e`. Non usare dati personali durante le prove. La suite automatica non è una certificazione WCAG né una prova su tutti i dispositivi reali.
+---
 
-## Percorso e regole
+## Mappa delle cartelle
 
-- Smartphone e tablet touch: solo avviso desktop, senza avviare audio, video o frame.
-- Desktop: start → storytelling → tutorial → Batcomputer (2 indizi) → Armeria (1) → Batmobile (2) → vittoria → statua → checkout demo → esito locale.
-- Mouse ai bordi o frecce per la visuale; Tab e Invio per gli indizi e le risposte; Esc chiude la carta o mette in pausa l’esplorazione.
-- 180 secondi di missione; pausa, caricamento e transizioni video non consumano tempo.
-- Primi due indizi entro 45 secondi: +60 secondi una sola volta, senza badge. Nessun premio commerciale speedrun.
-- Dopo 60 secondi di ricerca senza una carta aperta, l’hint si attiva; aumenta a 80 e 100 secondi.
-- Un refresh durante la missione ricomincia dalla start screen. Nessun progresso o dato del form è persistito.
-- `/#statua` e `/#checkout` aprono le schermate corrispondenti. `/#conferma` richiede un esito valido nella sessione corrente; altrimenti torna alla statua.
-- `prefers-reduced-motion` usa panorami statici, passaggi senza animazione e la statua statica nelle medesime composizioni DS.
+```
+.
+├── src/                          # Codice sorgente attivo dell'applicazione
+│   ├── features/                 # Moduli organizzati per flusso utente
+│   │   ├── intro/                # Schermata di avvio, storytelling Joker, tutorial Batcomputer
+│   │   ├── mission/              # Panorama 360°, carte Joker in-world, indizi, audio, vittoria/sconfitta
+│   │   ├── showreel/             # Visualizzatore interattivo a 800 frame WebP della statua
+│   │   └── checkout/             # Flusso di acquisto a 4 step (750 €), riepilogo e conferma
+│   ├── components/               # Componenti riutilizzabili condivisi
+│   │   ├── layout/               # Navbar adattiva contestuale per fase
+│   │   ├── cinematic/            # Fondale Batcomputer (video loop con fallback statico)
+│   │   ├── ui/                   # Token e componenti Design System (Button, IconButton, Timer, Logos, Cursor)
+│   │   └── shared/               # Indice di esportazione unificato dei componenti condivisi
+│   ├── hooks/                    # Hook riutilizzabili (useDesktop per gate hardware, useMissionTimer)
+│   ├── lib/                      # Motore di stato (experience.ts) e audio Web Audio API (audioManager.ts)
+│   ├── index.css                 # Stili globali e token visivi del Design System definitivo
+│   ├── main.tsx                  # Bootstrap dell'applicazione React 19
+│   └── App.tsx                   # Orchestratore principale delle fasi di fruizione
+├── public/                       # Risorse statiche servite direttamente
+│   └── assets/                   # Audio (WAV), video (MP4), texture 360°, font Poppins/Space Grotesk, 800 frame WebP
+├── tests/                        # Suite di collaudo
+│   ├── browser/                  # Test e2e Playwright con verifiche di accessibilità (Axe)
+│   ├── fixtures/                 # Pagina e configurazione isolata per i test dei componenti
+│   └── experience.test.ts        # Test unitari Node.js su state machine e validazione checkout
+├── docs/                         # Documentazione attiva di progetto
+│   ├── ESPERIENZA_E_CHECKOUT.md  # Flusso narrativo reale, controlli da tastiera, video e checkout
+│   ├── ARCHITETTURA_E_DESIGN_SYSTEM.md # Architettura React/Three.js, stato, audio e Design System Figma
+│   ├── VERIFICA_E_RILASCIO.md    # Suite di collaudo, CI GitHub Actions, deploy e rollback Vercel
+│   ├── CHANGELOG.md              # Storico ragionato dei rilasci e delle versioni
+│   ├── figma/assets.json         # Manifest con dimensioni native e checksum SHA-256 degli asset
+│   └── archivio/                 # Archivio storico di guide, audit, testi e materiali dei mesi di lavoro
+├── artifacts/                    # Cartella di output generata per report, tracce e fixture (esclusa da Git e Vercel)
+├── scripts/                      # Strumenti di manutenzione supportati (open-site.command, extract-frame.mjs)
+├── .github/workflows/            # Pipeline CI/CD di qualità su matrice browser
+├── playwright.config.ts          # Configurazione Playwright con reporter e tracciamento in artifacts/
+├── vite.config.ts                # Configurazione Vite con entrypoint per index.html e 404.html
+└── vercel.json                   # Configurazione deployment e header di sicurezza Vercel
+```
 
-## Struttura e asset
+---
 
-React + TypeScript, Vite, Three.js/React Three Fiber per le panoramiche. `src/lib/experience.ts` contiene le transizioni ammesse; `src/lib/checkout.ts` validazione, prezzi demo e premio. Token e componenti visivi traspongono esclusivamente il [Design System Figma ufficiale](https://www.figma.com/design/HNqMZbAGUnygNJu9kVJzOc/Batman_DesignSystem?node-id=0-1), consultato in sola lettura. Il componente condiviso è `src/components/ui/DesignSystem.tsx`; il dettaglio dei confronti e dei tre stati provvisori concordati è nel [report DS](docs/FIGMA_DS_ALIGNMENT.md).
+## Documentazione di approfondimento
 
-`public` è la fonte degli asset: 800 WebP numerati 0001–0800 (1536×864), tre MP4 panoramici, due MP4 di transizione, tre fallback JPG estratti dai panorami e file audio. Il renderer dello showreel usa massimo sei richieste concorrenti e conserva al massimo 48 immagini caricate, oltre alle richieste in corso. Gli errori non contano come caricamenti riusciti. I cinque MP4 non vengono scaricati integralmente all’apertura.
-
-## Pubblicazione
-
-Repository: https://github.com/alessandro-bottone-design/BatmanStatueExperience
-
-Sito: https://batman-87th-anniversary.vercel.app
-
-`dist` è generata e ignorata da Git. Vercel esegue `npm ci` e `npm run build`, pubblicando `dist`. Le pubblicazioni automatiche di `main` e del vecchio `preview/draft-review` sono disattivate nella configurazione del repository per consentire il rilascio controllato: preview del branch → test → merge → produzione senza assegnazione dominio → verifiche → promozione. Prima di rilasciare verificare account, progetto, commit e deployment precedente per rollback.
-
-## Documentazione
-
-- [Architettura](docs/ARCHITECTURE.md)
-- [Sistema visivo](docs/DESIGN_SYSTEM.md)
-- [Confronti Figma e stati provvisori](docs/FIGMA_DS_ALIGNMENT.md)
-- [Gameplay](docs/GAMEPLAY_SYSTEMS.md)
-- [Asset](docs/ASSET_STRUCTURE.md)
-- [Strumenti](scripts/README.md)
-- [Stato audit](docs/AUDIT_REMEDIATION.md)
-
-I documenti in `docs/history` conservano le specifiche precedenti: non descrivono il funzionamento corrente. I marchi e i personaggi rappresentati appartengono ai rispettivi titolari; il progetto ha finalità accademiche e non implica affiliazione commerciale.
+Per consultare le guide dettagliate del progetto:
+- [**Esperienza utente e Checkout**](docs/ESPERIENZA_E_CHECKOUT.md): regole di gioco, controlli da tastiera, fondale video e fallback, checkout a 4 tappe e schermata 404.
+- [**Architettura e Design System**](docs/ARCHITETTURA_E_DESIGN_SYSTEM.md): stato applicativo, caricamento asincrono, sistema audio e specifiche dei token Figma.
+- [**Verifica e Rilascio**](docs/VERIFICA_E_RILASCIO.md): procedure di test, CI/CD, distribuzione candidata su Vercel, promozione e rollback.
+- [**Changelog**](docs/CHANGELOG.md): evoluzione delle versioni del progetto.
+- [**Archivio storico**](docs/archivio/): documentazione precedente, audit, testi e report degli otto mesi di sviluppo.

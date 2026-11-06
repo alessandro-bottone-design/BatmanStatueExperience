@@ -17,9 +17,10 @@ test("official button, icon and timer variants preserve geometry and state color
       await expect(button).toHaveCSS("color", String(color));
       expect((await button.boundingBox())!.height).toBe(height);
       await button.hover();
-      await expect(button).toHaveCSS("background-color", String(color));
-      await expect(button).toHaveCSS("color", "rgb(1, 0, 19)");
+      await expect(button).toHaveCSS("background-color", "rgb(1, 0, 19)");
+      await expect(button).toHaveCSS("color", String(color));
       await page.mouse.down();
+      await expect(button).toHaveCSS("background-color", String(color));
       expect(
         await button.evaluate((el) => getComputedStyle(el).filter),
       ).not.toBe("none");
@@ -60,14 +61,14 @@ test("official button, icon and timer variants preserve geometry and state color
       .evaluateAll((es) =>
         es.map((e) => Math.round(e.getBoundingClientRect().width)),
       ),
-  ).toEqual([312, 312]);
+  ).toEqual([313, 313]);
   expect(
     await page
       .locator(".ds-timer-small")
       .evaluateAll((es) =>
         es.map((e) => Math.round(e.getBoundingClientRect().width)),
       ),
-  ).toEqual([185, 185]);
+  ).toEqual([207, 207]);
   expect(
     await page.locator(".ds-logos img").evaluateAll((es) =>
       es.map((e) => ({
@@ -77,8 +78,9 @@ test("official button, icon and timer variants preserve geometry and state color
       })),
     ),
   ).toEqual([
-    { w: 308, h: 193, ok: true },
-    { w: 255, h: 194, ok: true },
+    { w: 260, h: 145, ok: true },
+    { w: 98, h: 101, ok: true },
+    { w: 198, h: 146, ok: true },
   ]);
   await page.mouse.move(600, 600);
   await expect(page.locator(".ds-cursor")).toBeVisible();

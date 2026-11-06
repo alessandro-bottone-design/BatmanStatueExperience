@@ -17,5 +17,6 @@ coverage/
 
 # Generated build and browser evidence
 dist/
+artifacts/
 playwright-report/
 test-results/

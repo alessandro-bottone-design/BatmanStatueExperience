@@ -10,7 +10,7 @@ import {
   type IconName,
 } from "../../src/components/ui/DesignSystem";
 import FormInput from "../../src/components/ui/FormInput";
-import JokerCard from "../../src/components/joker/JokerCard";
+import JokerCard from "../../src/features/mission/JokerCard";
 import "../../src/index.css";
 function Field() {
   const [value, setValue] = useState("");
