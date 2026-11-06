@@ -376,9 +376,9 @@ export default function SharedPanoramaCanvas({
                     const card = document.querySelector<HTMLButtonElement>(
                       '[data-clue-id="' + r.id + '"] .clue-card',
                     );
-                    if (card && card.getClientRects().length)
+                    if (card && card.getClientRects().length && !card.disabled)
                       card.focus({ preventScroll: true });
-                    else if (attempts++ < 60) requestAnimationFrame(transfer);
+                    else if (attempts++ < 120) requestAnimationFrame(transfer);
                   };
                   requestAnimationFrame(transfer);
                 }}
