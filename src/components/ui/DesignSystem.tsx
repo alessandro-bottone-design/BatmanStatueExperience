@@ -5,7 +5,7 @@ import {
   type CSSProperties,
   type Ref,
 } from "react";
-import BatcaveBackdrop from "../cinematic/BatcaveBackdrop";
+import BatcaveBackdrop from "../layout/BatcaveBackdrop";
 export type Tone = "primary" | "secondary";
 export type IconName =
   | "chevron-left"

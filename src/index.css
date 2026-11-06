@@ -329,16 +329,29 @@ a {
   background: var(--black) url("/assets/textures/BatCaverna_Batcomputer360.jpg")
     center / cover no-repeat;
 }
-.batcave-backdrop video {
+.batcave-backdrop-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   display: block;
+  z-index: 1;
+}
+.batcave-backdrop video {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
 }
 .batcave-backdrop::after {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: 2;
   background:
     radial-gradient(
       ellipse at center,
@@ -350,7 +363,6 @@ a {
 .experience-shell[data-paused="true"] > .batcave-backdrop {
   z-index: 100;
 }
-.experience-shell:has(> .batcave-backdrop) > .ds-navbar,
 .ds-pause {
   background: transparent;
 }
@@ -365,7 +377,8 @@ a {
   min-height: 166px;
   padding-right: 50px;
   width: 100%;
-  background: var(--screen-background);
+  background: transparent;
+  pointer-events: none;
 }
 .ds-navbar-left,
 .ds-hud,
@@ -373,6 +386,7 @@ a {
   display: flex;
   align-items: center;
   gap: 30px;
+  pointer-events: auto;
 }
 .ds-navbar-actions {
   justify-content: flex-end;
@@ -601,7 +615,7 @@ a {
 }
 .panorama-scene {
   position: fixed;
-  inset: var(--nav-height) 0 0;
+  inset: 0;
   background: var(--black);
   overflow: auto;
 }
@@ -816,6 +830,9 @@ a {
     0 2px 8px #ff000099,
     0 8px 32px #ff00004d,
     0 16px 64px #ff000026;
+}
+.experience-shell[data-phase="showreel"] {
+  background: var(--black);
 }
 .statue-scroll {
   position: relative;
@@ -1212,7 +1229,7 @@ a {
 }
 .cinematic-player {
   position: fixed;
-  inset: var(--nav-height) 0 0;
+  inset: 0;
   background: var(--black);
 }
 .cinematic-player video {
@@ -1395,7 +1412,7 @@ a {
 }
 .transition-player {
   position: fixed;
-  inset: var(--nav-height) 0 0;
+  inset: 0;
   background: var(--black);
 }
 .transition-player > video {

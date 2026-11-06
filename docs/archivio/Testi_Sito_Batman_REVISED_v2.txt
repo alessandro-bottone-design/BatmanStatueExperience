@@ -1,4 +1,4 @@
-BATMAN 87th ANNIVERSARY STATUE
+BATMAN STATUE EXPERIENCE
 Inventario Completo dei Testi del Sito Web
 Generato il 22/05/2026
 
@@ -170,8 +170,8 @@ Ogni ombra di Gotham scolpita con ossessione
 MATERIALI D'ELITE
 Finitura da pezzo da museo, non da scaffale
   [Blocco C (scorrimento 50%-65%)]
-EDIZIONE LIMITATA
-Solo 500 esemplari al mondo. Il tuo porta un numero.
+STATUA DA COLLEZIONE
+Scultura dettagliata e finiture di livello museale.
   [Blocco D (scorrimento 70%-90%)]
 PRESENZA LEGGENDARIA
 Non arredamento. Una presenza.
@@ -254,7 +254,7 @@ Inserisci tutti i dati per procedere  (stato: modulo non valido)
 Protocollo in attesa: dati di missione incompleti
   [Riepilogo Ordine — colonna destra]
 Riepilogo Ordine  (titolo)
-Batman 87th Anniversary — Statua in Edizione Limitata  (nome prodotto)
+Batman Statue Experience — Statua da Collezione  (nome prodotto)
 SCALA: 1/4 | MAT: RESINA  (specifiche)
 €700,00 x [quantità]
 Subtotale
@@ -289,7 +289,7 @@ Trasmissione Cifrata // Rete Wayne
   [Titolo H1]
 Missione Completata.
   [Sottotitolo]
-Il tuo preordine della Batman 87th Anniversary Limited Edition è stato registrato con successo nei database Wayne.
+Il tuo preordine della Batman Statue Experience è stato registrato con successo nei database Wayne.
   [Card ordine — ID Transazione]
 ID Transazione  (etichetta)
 ORD-BW-XXXX  (valore generato casualmente)
@@ -297,7 +297,7 @@ ORD-BW-XXXX  (valore generato casualmente)
 Stato Protocollo  (etichetta)
 PREORDINE CONFERMATO
   [Card ordine — Dettagli]
-Prodotto  →  Batman 87th Anniversary
+Prodotto  →  Batman Statue Experience
 Quantità  →  x[N]
 Data  →  GG/MM/AAAA
 Spedizione  →  Prevista inizio Q4

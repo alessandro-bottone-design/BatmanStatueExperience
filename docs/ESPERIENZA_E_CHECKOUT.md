@@ -1,6 +1,6 @@
 # Esperienza utente e Checkout
 
-Guida di riferimento per il flusso utente, i controlli d'interazione, la gestione multimediale e la simulazione di checkout dell'esperienza interattiva *Batman 87th Anniversary Statue Experience*.
+Guida di riferimento per il flusso utente, i controlli d'interazione, la gestione multimediale e la simulazione di checkout dell'esperienza interattiva *Batman Statue Experience*.
 
 ---
 
@@ -86,6 +86,8 @@ L'applicazione supporta la piena navigazione tramite tastiera, rispettando gli s
 
 ## 3. Fondale video e fallback statico
 
+- **Regola di Rendering 3D a 360° Chiuso**:
+  - Per tutte le schermate che ospitano l'interfaccia UI al di sopra della Batcaverna (Start, Storytelling, Tutorial, Pausa, Risultato, Checkout, Thank you, 404), l'ambiente 3D `BatCaverna_Batcomputer360.mp4` deve essere sempre proiettato come **panorama a 360 gradi chiuso** (proiezione sferica prospettica 3D dall'interno) e **MAI come video 2D equirettangolare piatto/aperto**, per evitare distorsioni e curvature polari del pavimento.
 - **Fondale attivo (`BatcaveBackdrop`)**:
   - Utilizza il video loop `public/assets/textures/BatCaverna_Batcomputer360.mp4` come ambientazione dinamica del Batcomputer.
   - Il video è marcato come `aria-hidden="true"`, `muted`, `loop`, `playsInline` per non interferire con gli screen reader né consumare risorse non necessarie.
@@ -97,7 +99,7 @@ L'applicazione supporta la piena navigazione tramite tastiera, rispettando gli s
 
 ## 4. Checkout a quattro tappe (Prezzo fisso 750 €)
 
-Il checkout è una simulazione sicura e autonoma che ricalca l'esperienza di acquisto di un prodotto da collezione in edizione limitata.
+Il checkout è una simulazione sicura e autonoma che ricalca l'esperienza di acquisto di un prodotto da collezione.
 
 1. **Tappa 1 — Dati personali**:
    - Nome e cognome, indirizzo email valido, password di sicurezza.
@@ -107,7 +109,7 @@ Il checkout è una simulazione sicura e autonoma che ricalca l'esperienza di acq
    - **PayPal**: flusso simulato con reindirizzamento e autorizzazione immediata senza richiesta di dati carta.
    - **Carta di credito**: convalida puntuale con algoritmo Luhn su 16 cifre, formato scadenza MM/AA, codice CVV a 3 cifre.
 4. **Tappa 4 — Riepilogo e conferma**:
-   - Quantità bloccata a 1 pezzo (edizione limitata 87º anniversario).
+   - Quantità bloccata a 1 pezzo per ordine.
    - Prezzo fisso: 750,00 € con spedizione inclusa.
 
 ### Privacy e sicurezza dei dati demo

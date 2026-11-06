@@ -1,4 +1,4 @@
-# 🎨 DESIGN SYSTEM — Batman 87th Anniversary
+# 🎨 DESIGN SYSTEM — Batman Statue Experience
 
 > **Stato attuale:** 🔄 **Trasformazione in corso** — Il sito sta migrando dal design system generato dall'AI (Antigravity) verso il **Design System ufficiale di Alessandro Bottone**, progettato in Figma e codificato secondo la metodologia **Atomic Design**.
 
@@ -77,7 +77,7 @@ Form completo in stile Wayne Tech con campi:
 
 ### 🎬 Showreel Titles
 - `L'EREDITÀ É TUA`
-- `EDIZIONE LIMITATA A 500 COPIE`
+- `STATUA DA COLLEZIONE`
 
 ### 📊 Progression Clues
 Barra progresso 5 slot (`disabled` / `active`)
@@ -138,7 +138,7 @@ Raggruppamento form per sezione:
 ### 🎥 Showreel Quality Text
 4 card qualità in riga:
 - PRESENZA LEGGENDARIA
-- EDIZIONE LIMITATA
+- STATUA DA COLLEZIONE
 - MATERIALI D'ELITE
 - SCULTURA DI PRECISIONE
 

@@ -9,7 +9,7 @@ import {
 } from "react";
 import { MotionConfig, useReducedMotion } from "motion/react";
 import PauseOverlay from "./components/ui/PauseOverlay";
-import BatcaveBackdrop from "./components/cinematic/BatcaveBackdrop";
+import BatcaveBackdrop from "./components/layout/BatcaveBackdrop";
 import Navbar, { type NavPhase } from "./components/layout/Navbar";
 import IntroScreen from "./features/intro/IntroScreen";
 import StartScreen from "./features/intro/StartScreen";
@@ -294,9 +294,9 @@ function Experience() {
             {phase === "thankyou" && state.order && (
               <Confirmation onReturnHome={() => navigate("start")} />
             )}
-            {playing && !reduced && (
+            {status === "active" && (
               <JokerAudio
-                isActive={status === "active"}
+                isActive={playing}
                 isMuted={muted}
                 isPaused={paused}
               />

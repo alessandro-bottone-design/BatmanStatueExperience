@@ -1,5 +1,5 @@
-import Navbar from "../components/layout/Navbar";
-import BatcaveBackdrop from "../components/cinematic/BatcaveBackdrop";
+import Navbar from "../../components/layout/Navbar";
+import BatcaveBackdrop from "../../components/layout/BatcaveBackdrop";
 
 export default function NotFound() {
   return (

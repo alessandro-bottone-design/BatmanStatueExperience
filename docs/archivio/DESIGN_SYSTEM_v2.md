@@ -18,6 +18,7 @@ Il riferimento visivo è il file definitivo [BatmanStatueExperience Design Syste
 | Esiti e showreel | `302:1348`, `241:3528` |
 | Checkout e conferma | `314:2693`, `314:2104`, `245:3938`, `235:1590`, `243:3874` |
 | Avviso touch e 404 | `238:2970`, `249:953` |
+| Favicon ufficiale | `338:5677` |
 
 Le schermate a 1920 × 1080 hanno una composizione adattiva per finestre più piccole. Le scene di missione conservano i panorami, le carte nel mondo e i valori effettivi di timer e progresso. Il checkout mostra una tappa per volta, conserva i dati in memoria durante la compilazione e simula entrambi i metodi di pagamento. La build include la pagina `404.html` per l’hosting statico.
 

@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-11-06 (v2.1.0) — Riorganizzazione architetturale definitiva, proiezione sferica 3D chiusa Batcave e Favicon Figma ufficiale
+
+- **Riorganizzazione e pulizia architettura (`src/`)**:
+  - Eliminazione definitiva di tutte le cartelle fantasma e i file wrapper re-export non necessari: rimosse `src/sections/`, `src/components/cinematic/`, `src/components/joker/`, `src/features/introduzione/`, `src/features/missione/`, `src/components/shared/` e cartelle vuote residue.
+  - Normalizzazione della pagina di errore 404 in `src/features/not-found/NotFound.tsx`.
+  - Spostamento del componente di sfondo globale in `src/components/layout/BatcaveBackdrop.tsx`.
+- **Implementazione ambiente 3D sferico chiuso 360° per Batcomputer (`BatcaveBackdrop`)**:
+  - Risoluzione della regola vincolante di rendering: proiezione dell'ambiente Batcomputer (`BatCaverna_Batcomputer360.mp4` / `.jpg`) su geometria sferica Three.js a 360° prospettica (`SphereGeometry` invertita con `PerspectiveCamera`), eliminando la distorsione polare e nadir 2D su tutte le schermate UI (Start, Intro, Tutorial, Pausa, Risultati, Checkout, Thank You, 404).
+  - Mantenuto il fallback statico ad alte prestazioni e il supporto per `prefers-reduced-motion`.
+- **Favicon ufficiale Figma**:
+  - Sostituzione delle icone placeholder con il nodo ufficiale Figma Frame 440 (`338:5677`) in formato vettoriale `public/favicon.svg` e multi-risoluzione `public/favicon.ico`.
+- **Trasparenza globale Navbar**:
+  - Eliminazione di qualsiasi barra nera o gradiente: navbar al 100% trasparente a filo superiore (`inset: 0`).
+- **Riorganizzazione documentale e archivio storico**:
+  - Creazione di `docs/archivio/README.md` per chiarire la natura storica dei file archiviati e separarla dalle guide attive.
+  - Aggiornamento del `README.md` principale e delle guide di verifica e rilascio.
+
 ## 2026-11-06 — Consolidamento Design System definitivo, riordino modulare e pubblicazione
 
 - **Design System definitivo e fondale Batcomputer**: consolidamento della versione approvata in anteprima con il fondale Batcomputer (`BatcaveBackdrop`) e i token Figma ufficiali.

@@ -1,6 +1,6 @@
 # Architettura e Design System
 
-Guida tecnica all'architettura software, alla gestione dello stato, al sistema audio e alle specifiche del Design System per *Batman 87th Anniversary Statue Experience*.
+Guida tecnica all'architettura software, alla gestione dello stato, al sistema audio e alle specifiche del Design System per *Batman Statue Experience*.
 
 ---
 
@@ -18,12 +18,11 @@ src/
 │   ├── intro/              # StartScreen, IntroScreen, BatcomputerBootOverlay
 │   ├── mission/            # Panorama 360°, MouseLookControls, JokerCard, Hint, Result
 │   ├── showreel/           # BatmanCamera (800 frame WebP)
-│   └── checkout/           # Checkout flow, ThankYouPage, checkoutModel
+│   ├── checkout/           # Checkout flow, ThankYouPage, checkoutModel
+│   └── not-found/          # NotFound screen (404)
 ├── components/             # Componenti riutilizzabili condivisi
-│   ├── layout/             # Navbar (adattiva per fase)
-│   ├── cinematic/          # BatcaveBackdrop (video loop e fallback statico)
-│   ├── ui/                 # Design System (Button, IconButton, Logos, Timer, Cursor, MobileNotice)
-│   └── shared/             # Barrel export unificato per componenti condivisi
+│   ├── layout/             # Navbar trasparente e BatcaveBackdrop (sfera 3D 360°)
+│   └── ui/                 # Design System (Button, IconButton, Logos, Timer, Cursor, ErrorBoundary, FormInput, PauseOverlay)
 ├── hooks/                  # Hook di utilità (useDesktop, useMissionTimer)
 ├── lib/                    # Logica di business pura (experience.ts, audioManager.ts)
 ├── App.tsx                 # Root orchestrator dell'esperienza
@@ -88,6 +87,10 @@ Il Design System applica fedelmente le specifiche del file Figma ufficiale:
    - Campi di testo con etichetta superiore, stati espliciti di riposo, focus, compilato, errore (con messaggio contestuale) e successo.
 6. **`JokerCard`**:
    - Carte fronte/retro posizionate nello spazio tridimensionale con dimensioni 300×426 px (immagine 260×386 px), conforme agli export Figma originali.
+7. **`BatcaveBackdrop` (Ambiente 3D chiuso a 360°)**:
+   - Regola vincolante: per tutte le schermate che ospitano l'UI al di sopra della Batcaverna, l'ambiente `BatCaverna_Batcomputer360.mp4` deve essere sempre proiettato come panorama a 360 gradi chiuso (proiezione prospettica 3D sferica), MAI aperto come video 2D equirettangolare piatto.
+8. **Favicon ufficiale (`338:5677`)**:
+   - Icona ufficiale Batman del Design System su sfondo nero (`#010013`) con bagliore oro (`#FFD700`), esportata in formato vettoriale `public/favicon.svg` e multi-risoluzione `public/favicon.ico`.
 
 ---
 

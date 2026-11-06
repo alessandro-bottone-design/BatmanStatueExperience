@@ -34,7 +34,22 @@ function sync() {
     void (paused ? context.suspend() : context.resume()).catch(() => {});
 }
 export const BatcavernAudio = {
-  preload() {},
+  preload() {
+    try {
+      const { ctx } = graph();
+      if (!laughBuffer && ctx.state !== "closed") {
+        void fetch("/assets/audio/RisataJoker.wav")
+          .then((res) => (res.ok ? res.arrayBuffer() : null))
+          .then((buf) => (buf ? ctx.decodeAudioData(buf) : null))
+          .then((decoded) => {
+            if (decoded) laughBuffer = decoded;
+          })
+          .catch(() => {});
+      }
+    } catch {
+      /* Audio is optional. */
+    }
+  },
   start(_fade?: number) {
     if (muted || paused) return;
     if (!music) {
@@ -43,6 +58,15 @@ export const BatcavernAudio = {
       music.volume = 0.3;
     }
     void music.play().catch(() => {});
+    try {
+      const { ctx } = graph();
+      if (ctx.state === "suspended") {
+        void ctx.resume().catch(() => {});
+      }
+      this.preload();
+    } catch {
+      /* Audio is optional. */
+    }
   },
   setMuted(value: boolean) {
     muted = value;
@@ -106,6 +130,9 @@ export const BatcavernAudio = {
     void (async () => {
       try {
         const { ctx, gain } = graph();
+        if (ctx.state === "suspended") {
+          await ctx.resume().catch(() => {});
+        }
         if (!laughBuffer) {
           const response = await fetch("/assets/audio/RisataJoker.wav");
           if (!response.ok) return;
@@ -114,26 +141,72 @@ export const BatcavernAudio = {
         if (cancelled || muted || paused || ctx.state === "closed") return;
         source = ctx.createBufferSource();
         source.buffer = laughBuffer;
+        // Rallentamento inquietante e cupo della voce del Joker
         source.playbackRate.value = 0.62 + Math.random() * 0.13;
+
+        // Volume procedurale via di mezzo: varia da 0.09 (in lontananza) a 0.22 (più presente),
+        // simulando distanze diverse senza mai essere assordante né inudibile.
+        const volumeVal = 0.09 + Math.random() * 0.13;
+
+        // Lowpass: le rocce della caverna smorzano le alte frequenze in lontananza
         const filter = ctx.createBiquadFilter();
         filter.type = "lowpass";
-        filter.frequency.value = 700 + Math.random() * 1400;
+        filter.frequency.value = 650 + Math.random() * 1350;
+        filter.Q.value = 0.7;
+
+        // Posizione stereo casuale nello spazio della caverna (-0.85 a +0.85)
         const pan = ctx.createStereoPanner();
-        pan.pan.value = (Math.random() * 2 - 1) * 0.88;
-        const volume = ctx.createGain();
-        volume.gain.value = 0.14;
-        const delay = ctx.createDelay(2);
-        delay.delayTime.value = 0.45;
-        const echo = ctx.createGain();
-        echo.gain.value = 0.3;
+        const panVal = (Math.random() * 2 - 1) * 0.85;
+        pan.pan.value = panVal;
+
+        const mainVolume = ctx.createGain();
+        mainVolume.gain.value = volumeVal;
+
+        // Eco 1: riflessione vicina rimbalzata dalla parete opposta
+        const delay1 = ctx.createDelay(2);
+        delay1.delayTime.value = 0.32 + Math.random() * 0.18;
+        const echo1Pan = ctx.createStereoPanner();
+        echo1Pan.pan.value = panVal * -0.45;
+        const echo1Gain = ctx.createGain();
+        echo1Gain.gain.value = volumeVal * 0.34;
+
+        // Eco 2: riverbero profondo del fondo della caverna
+        const delay2 = ctx.createDelay(2);
+        delay2.delayTime.value = 0.72 + Math.random() * 0.35;
+        const echo2Pan = ctx.createStereoPanner();
+        echo2Pan.pan.value = panVal * -0.7;
+        const echo2Gain = ctx.createGain();
+        echo2Gain.gain.value = volumeVal * 0.16;
+
+        // Connessione percorso diretto
         source.connect(filter);
         filter.connect(pan);
-        pan.connect(volume);
-        volume.connect(gain);
-        volume.connect(delay);
-        delay.connect(echo);
-        echo.connect(gain);
-        nodes.push(filter, pan, volume, delay, echo);
+        pan.connect(mainVolume);
+        mainVolume.connect(gain);
+
+        // Connessione riflessione eco 1
+        filter.connect(delay1);
+        delay1.connect(echo1Pan);
+        echo1Pan.connect(echo1Gain);
+        echo1Gain.connect(gain);
+
+        // Connessione riflessione eco 2
+        filter.connect(delay2);
+        delay2.connect(echo2Pan);
+        echo2Pan.connect(echo2Gain);
+        echo2Gain.connect(gain);
+
+        nodes.push(
+          filter,
+          pan,
+          mainVolume,
+          delay1,
+          echo1Pan,
+          echo1Gain,
+          delay2,
+          echo2Pan,
+          echo2Gain,
+        );
         sources.add(source);
         const current = source;
         source.onended = () => {

@@ -1,6 +1,6 @@
 # Verifica e Rilascio
 
-Guida operativa per la suite di test, la pipeline di integrazione continua GitHub Actions e il processo di pubblicazione e rollback su Vercel per *Batman 87th Anniversary Statue Experience*.
+Guida operativa per la suite di test, la pipeline di integrazione continua GitHub Actions e il processo di pubblicazione e rollback su Vercel per *Batman Statue Experience*.
 
 ---
 
@@ -58,7 +58,7 @@ Dallo SHA confluito in `main`, lanciare:
 vercel deploy --prod --skip-domain
 ```
 
-Questo comando crea un deployment di produzione completo senza assegnare immediatamente il dominio pubblico `batman-87th-anniversary.vercel.app`, restituendo un URL univoco di anteprima candidata (es. `https://batman-87th-anniversary-xxxx.vercel.app`).
+Questo comando crea un deployment di produzione completo senza assegnare immediatamente il dominio pubblico `batman-statue-experience.vercel.app`, restituendo un URL univoco di anteprima candidata (es. `https://batman-statue-experience-xxxx.vercel.app`).
 
 ### Fase 2: Checklist di collaudo sull'URL candidato
 
@@ -99,4 +99,4 @@ Oppure specificando l'identificativo esatto del deployment precedente:
 vercel rollback <previous-deployment-id>
 ```
 
-Dopo il rollback, verificare che il dominio pubblico `https://batman-87th-anniversary.vercel.app` risponda con il commit e la versione corretti.
+Dopo il rollback, verificare che il dominio pubblico `https://batman-statue-experience.vercel.app` risponda con il commit e la versione corretti.

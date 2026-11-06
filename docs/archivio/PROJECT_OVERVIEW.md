@@ -1,7 +1,7 @@
 # PROJECT OVERVIEW
 
 ## Il Progetto
-**Batman 87th Anniversary Limited Edition — Esperienza Narrativa Cinematografica Immersiva**
+**Batman Statue Experience — Esperienza Narrativa Cinematografica Immersiva**
 
 Questo non è un sito e-commerce convenzionale, ma un prototipo ad altissimo impatto visivo e narrativo sviluppato per presentare la statua The Batman in scala 1/4 (Sideshow). È stato sviluppato nell'ambito del corso accademico IUAD di UI/UX Design.
 

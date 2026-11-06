@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
-import NotFound from "./sections/NotFound";
+import NotFound from "./features/not-found/NotFound";
 import "./index.css";
 const root = document.getElementById("root")!;
 const notFound =
