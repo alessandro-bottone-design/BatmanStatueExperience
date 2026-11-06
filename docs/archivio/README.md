@@ -29,3 +29,4 @@ Questa cartella raccoglie il materiale documentale storico, i report di audit pr
 | `Testi_Sito_Batman_REVISED_v2.docx` / `.txt` | Copywriting integrale del monologo del Joker e testi degli enigmi. |
 | `UI_UX_GUIDELINES.md` & `_v2.md` | Bozza delle linee guida di esperienza utente. |
 | `assets/`, `figma/`, `scripts/` | Script di utility e riferimenti visivi usati nei primi sprint. |
+

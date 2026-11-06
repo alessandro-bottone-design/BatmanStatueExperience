@@ -1,16 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import * as THREE from "three";
+import { useDesktop } from "../../hooks/useDesktop";
 
 const BATCOMPUTER = "/assets/textures/BatCaverna_Batcomputer360";
 
 export default function BatcaveBackdrop() {
+  const isDesktop = useDesktop();
   const reduced = useReducedMotion();
   const [failed, setFailed] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
+    if (!isDesktop) return;
     const canvas = canvasRef.current;
     const video = videoRef.current;
     if (!canvas) return;
@@ -147,11 +150,13 @@ export default function BatcaveBackdrop() {
         alive = false;
       };
     }
-  }, [reduced, failed]);
+  }, [isDesktop, reduced, failed]);
 
   return (
     <div className="batcave-backdrop" aria-hidden="true" inert>
-      <canvas ref={canvasRef} className="batcave-backdrop-canvas" />
+      {isDesktop && (
+        <canvas ref={canvasRef} className="batcave-backdrop-canvas" />
+      )}
       {!reduced && !failed && (
         <video
           ref={videoRef}
